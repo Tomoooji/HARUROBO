@@ -5,15 +5,17 @@
 // you can enable debug logging to Serial at 115200
 //#define REMOTEXY__DEBUGLOG    
 
+
+
 // RemoteXY select connection mode and include library 
-//#define REMOTEXY_MODE__ESP32CORE_BLE
 #define REMOTEXY_MODE__ESP32CORE_BLUETOOTH
 
-//#include <BLEDevice.h>
 #include <BluetoothSerial.h>
 
+
+
 // RemoteXY connection settings 
-#define REMOTEXY_BLUETOOTH_NAME "あああ"
+#define REMOTEXY_BLUETOOTH_NAME "RemoteXY"
 
 
 #include <RemoteXY.h>
@@ -22,7 +24,7 @@
 #pragma pack(push, 1)  
 uint8_t const PROGMEM RemoteXY_CONF_PROGMEM[] =   // 29 bytes V19 
   { 255,2,0,0,0,22,0,19,0,0,0,0,31,1,106,200,1,1,1,0,
-  5,27,18,60,60,32,2,26,31 };
+  5,1,47,102,102,32,2,26,31 };
   
 // this structure defines all the variables and events of your control interface 
 struct {
@@ -43,12 +45,13 @@ struct {
 /////////////////////////////////////////////
 
 
+
 int speed1, speed2;
 float theta1, radius1;
 int pin1 = 15, pin2 = 2; // front right
 int pin3 = 0, pin4 = 4; // front left
 int pin5 = 16, pin6 = 17; // back left
-int pin7 = 18, pin8 = 5; // back right
+int pin7 = 12, pin8 = 14; // back right
 
 void calcomni(int x, int y);
 void drivemotor(int speed, int pin1, int pin2);
@@ -73,10 +76,10 @@ void setup()
 void loop() 
 { 
   RemoteXYEngine.handler ();   
-  calcomni(RemoteXY.joystick_01_x, RemoteXY.joystick_01_y);
-  RemoteXY_Handler();   
+  //calcomni(RemoteXY.joystick_01_x, RemoteXY.joystick_01_y);
+  //RemoteXY_Handler();   
 
-  calcomni(RemoteXY.joystick_01_x, RemoteXY.joystick_01_y);
+  calcomni(RemoteXY.joystick_01_x, -RemoteXY.joystick_01_y);
 
   // 向かい合う2輪に同じ成分を与える
   // cos成分 → 右前(fr) & 左後ろ(bl)
@@ -98,7 +101,7 @@ void loop()
 void calcomni(int x, int y) {
   radius1 = sqrt(sq(x) + sq(y));
   radius1 = radius1 > 100 ? 100 : radius1;
-  theta1 = 0.25 * PI + atan2(y, x);
+  theta1 = roundRad(0.25 * PI + atan2(y, x));
   speed1 = cos(theta1) * (radius1 * 2.55);
   speed2 = sin(theta1) * (radius1 * 2.55);
 }
@@ -124,4 +127,9 @@ void drivemotor(int speed, int pin1, int pin2) {
     ledcWrite(pin1, 0);
     ledcWrite(pin2, 0);
   }
+}
+
+
+float roundRad(float angle){
+  return round(angle*100)/100.0f;
 }
