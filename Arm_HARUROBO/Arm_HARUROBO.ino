@@ -51,7 +51,7 @@ int filter(int8_t val){
 
 void radmoveServo(int num, const uint8_t* ch, const float* radAng){
   for(int i=0;i<num;i++){
-    pwm.setPWM(ch[i],0,map(constrain(degrees(radAng[i]),10,170),0,180,SERVOMAX,SERVOMIN));
+    pwm.setPWM(ch[i],0,map(constrain(degrees(radAng[i]),10,170),0,180,SERVOMIN,SERVOMAX));
     //*
     Serial.print(degrees(radAng[i]));
     if(i<num-1){
