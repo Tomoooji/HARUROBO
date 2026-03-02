@@ -1,0 +1,67 @@
+#pragma once // これは気にしない
+
+inline int sign(auto x){return (x>0)-(x<0);}
+
+
+//-- LOGICs --//
+// set 8 direction form -pi~pi angle
+void setdirection(float inputAngle, int& direcX, int& direcY){
+  // form -PI to PI
+  if(inputAngle > PI -range_othogonal || inputAngle < -PI +range_othogonal){
+    // LEFT
+    direcX = -1; direcY = 0;
+  }
+  else if(inputAngle <= -0.5*PI -range_othogonal){
+    // BACKLEFT
+    direcX =-1; direcY =-1;
+  }
+  else if(inputAngle < -0.5*PI +range_othogonal){
+    // BACK
+    direcX = 0; direcY =-1;
+  }
+  else if(inputAngle <= 0 -range_othogonal){
+    // BACKRIGHT
+    direcX = 1; direcY =-1;
+  }
+  else if(inputAngle < 0 +range_othogonal){
+    // RIGHT
+    direcX = 1; direcY = 0;
+  }
+  else if(inputAngle <= 0.5*PI -range_othogonal){
+    // FRONTRIGHT
+    direcX = 1; direcY = 1;
+  }
+  else if(inputAngle < 0.5*PI +range_othogonal){
+    // FRONT
+    direcX = 0; direcY = 1;
+  }
+  else if(inputAngle <= PI -range_othogonal){
+    // FRONTLEFT
+    direcX =-1; direcY = 1;
+  }
+  else{
+    direcX = 0; direcY = 0;
+  }
+}
+
+//-- OUTPUTs --//
+
+// drive dc motor
+void drivemotor(int index, int speed = DC_default_speed){
+    speed = constrain(speed, -255, 255);
+  if (speed > 0) {
+    ledcWrite(DCpins[index*2], speed);
+    ledcWrite(DCpins[index*2+1], 0);
+  } else {
+    ledcWrite(DCpins[index*2], 0);
+    ledcWrite(DCpins[index*2+1], -speed);
+  }
+}
+
+// drive leg motors
+void driveomuni(int direcX, int direcY, int turn, int speedVal = DC_default_speed){
+  drivemotor(FRONTRIGHT,speedVal*sign(direcY -direcX -turn));
+  drivemotor(BACKRIGHT, speedVal*sign(direcY +direcX -turn));
+  drivemotor(BACKLEFT , speedVal*sign(direcY -direcX +turn));
+  drivemotor(FRONTLEFT, speedVal*sign(direcY +direcX +turn));
+}
