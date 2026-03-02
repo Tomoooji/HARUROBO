@@ -1,4 +1,5 @@
 #pragma once // これは気にしない
+#include <Arduino.h>
 
 inline int sign(auto x){return (x>0)-(x<0);}
 
