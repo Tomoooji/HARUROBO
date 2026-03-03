@@ -1,12 +1,8 @@
 #pragma once
 // ライブラリのinclude //
 #if defined(PS4_RIMOCON)
-  #include <PS4Controller.h>
-#elif defined(RemoteXY_BLE) || defined(RemoteXY_BTCL)
-  #include "RemoteXYrimocon.h"
-#endif
 
-#if defined(PS4_RIMOCON)
+#include <PS4Controller.h>
 // update controller values
 inline void PS4Input(){
   connection_flag = PS4.isConnected();
@@ -30,6 +26,8 @@ inline void PS4Input(){
 
 #elif defined(RemoteXY_BLE) || defined(RemoteXY_BTCL)
 
+#include "RemoteXYrimocon.h"
+// update controller values
 inline void RemoteXYInput(){
   connection_flag = RemoteXY.connect_flag;
 
@@ -50,3 +48,4 @@ inline void RemoteXYInput(){
   hand_button_DOWN=RemoteXY.button_08;
 }
 #endif
+

@@ -1,7 +1,7 @@
-//#define RemoteXY_BLE
+// モード選択 //
+#define RemoteXY_BLE
 //#define RemoteXY_BTCL
-#define PS4_RIMOCON
-
+//#define PS4_RIMOCON
 
 // 定義 //
 constexpr int FRONTRIGHT = 0;
@@ -36,10 +36,6 @@ constexpr float InitalAngle[3] = {radians(0),radians(0),radians(90)};//{-30, 0, 
 constexpr int LEDpins[]={32};
 // connection, anglecorrect, dcpowered(これは回路側で実装？)
 
-// ファイルのinclude //
-#include "Omuni.h"
-#include "InverseKinematics.h"
-////extern PCA9685 servo_pwm;
 
 // 入力用変数 //
 bool connection_flag;
@@ -49,11 +45,14 @@ bool yagura_R, yagura_L;
 
 int arm_joystick_x, arm_joystick_y;
 bool arm_button_UP, arm_button_DOWN;
-////bool arm_button_init, arm_button_chatch, arm_button_shoot;
+bool arm_button_init, arm_button_chatch, arm_button_shoot;
 
 bool hand_button_UP, hand_button_DOWN;
 
+// ファイルのinclude //
 #include "SerectMode.h"
+#include "Omuni.h"
+#include "InverseKinematics.h"
 
 // 内部変数 //
 int _direcX, _direcY; // 触るべからず
@@ -62,21 +61,21 @@ int _handAng = 90;
 
 void setup(){
   Serial.begin(9600);/////
-
-  PS4.begin(MAC_PS4CON);
-  //RemoteXY_Init();
+  
+  //PS4.begin(MAC_PS4CON);
+  RemoteXY_Init();
 
   InitIK(arm);
 
   // init servo motors //
   servo_pwm.begin();
   servo_pwm.setPWMFreq(50);
+
   // init DCmotors //
   for(int pin: DCpins){
     ledcAttach(pin,12800,8);
     ledcWrite(pin,0);
   }
-  // init LED //
   for(int pin: LEDpins){
     ledcAttach(pin,12800,8);
     ledcWrite(pin,0);
@@ -84,11 +83,12 @@ void setup(){
 }
 
 void loop(){
-  PS4Input();
-  //RemoteXYEngine.handler(); RemoteXYInput();
-
+  //PS4Input();
+  RemoteXYEngine.handler(); RemoteXYInput();
+  
   ledcWrite(LEDpins[0],connection_flag*led_power);
-  if(connection_flag){ 
+  if(connection_flag){
+ 
     //-- manage omuni --//
     if(sq(leg_joystick_x) + sq(leg_joystick_y) > sq(range_ignoreLstick)){
       setdirection(atan2(leg_joystick_y, leg_joystick_x), _direcX, _direcY);
@@ -96,8 +96,10 @@ void loop(){
       _direcX = 0; _direcY = 0;
     } // →set direcX/Y
     driveomuni(_direcX, _direcY, leg_button_R-leg_button_L,255);
+
     //-- manege yaguraarm --//
     drivemotor(YAGURAARM, 200*(yagura_L - yagura_R));
+    
     //-- manege ikarm --//
     if(sq(arm_joystick_x) + sq(arm_joystick_y) > sq(range_ignoreRstick)){
       moveTarget(arm, arm_speed*(sign(arm_joystick_x)), // dx
@@ -107,12 +109,19 @@ void loop(){
     // →arm(sholder&elbow) angle
     
     ///////moveWrist(arm, wrist_speed*(arm_button_UP - arm_button_DOWN));// dang
-    arm.servoAngle[2] += wrist_speed*(arm_button_UP - arm_button_DOWN);
+    //arm.servoAngle[2] += wrist_speed*(arm_button_UP - arm_button_DOWN);
+    arm.servoAngle[2] = constrain(arm.servoAngle[2] + +wrist_speed*(arm_button_UP - arm_button_DOWN),0,PI);
     // →wrist angle
     
     _handAng = constrain(_handAng + hand_speed*(hand_button_UP - hand_button_DOWN), hand_min, hand_max);
     //　→hand(finger) angle
     
+    if(arm_button_init){
+      arm.servoAngle[0] = ;
+      arm.servoAngle[0] = ;
+      arm.servoAngle[0] = ;
+    }
+
     updateservo(arm, _handAng);//, Channels);// handだけdegreesだけど許してちょ♡
     // →apply angles
     
@@ -130,6 +139,6 @@ void loop(){
     Serial.println();
   }
 
-  delay(10);
-    //RemoteXYEngine.delay(50);
+  //delay(10);
+  RemoteXYEngine.delay(50);
 }
