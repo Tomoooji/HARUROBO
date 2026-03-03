@@ -1,6 +1,8 @@
+//#define RemoteXY_BLE
+//#define RemoteXY_BTCL
+#define PS4_RIMOCON
+
 // ライブラリのinclude //
-#include <PS4Controller.h>
-//#include "RemoteXYrimocon.h"
 
 // 定義 //
 constexpr int FRONTRIGHT = 0;
@@ -51,51 +53,16 @@ bool arm_button_UP, arm_button_DOWN;
 ////bool arm_button_init, arm_button_chatch, arm_button_shoot;
 
 bool hand_button_UP, hand_button_DOWN;
+#include "SerectMode.h"
 
 // 内部変数 //
 int _direcX, _direcY; // 触るべからず
 IK3 arm=IK3(ArmLength, InitalAngle);
 int _handAng = 90;
 
-// update controller values
-void PS4Input(){
-  connection_flag = PS4.isConnected();
-  
-  leg_joystick_x = PS4.LStickX();
-  leg_joystick_y = PS4.LStickY();
-  leg_button_R = PS4.R2Value() > line_RL2pushed;
-  leg_button_L = PS4.L2Value() > line_RL2pushed;
-  
-  yagura_L = PS4.Left();
-  yagura_R = PS4.Right();
-
-  arm_joystick_x = PS4.RStickX();
-  arm_joystick_y = PS4.RStickY();
-  arm_button_UP =PS4.Circle();
-  arm_button_DOWN =PS4.Cross();
-  
-  hand_button_UP = PS4.L1();
-  hand_button_DOWN=PS4.R1();
-}
-/*
-void RemoteXYInput(){
-  connection_flag = RemoteXY.connect_flag;
-  leg_joystick_x = RemoteXY.joystick_01_x;
-  leg_joystick_y = RemoteXY.joystick_01_y;
-  leg_button_R = RemoteXY.button_01;
-  leg_button_L = RemoteXY.button_02;
-  yagura_L = RemoteXY.button_03;
-  yagura_R = RemoteXY.button_04;
-  arm_joystick_x = RemoteXY.joystick_02_x;
-  arm_joystick_y = RemoteXY.joystick_02_y;
-  arm_button_UP = RemoteXY.button_05;
-  arm_button_DOWN=RemoteXY.button_06;
-  hand_button_UP = RemoteXY.button_07;
-  hand_button_DOWN=RemoteXY.button_08;
-}*/
-
 void setup(){
   Serial.begin(9600);/////
+
   PS4.begin(MAC_PS4CON);
   //RemoteXY_Init();
 
@@ -104,12 +71,12 @@ void setup(){
   // init servo motors //
   servo_pwm.begin();
   servo_pwm.setPWMFreq(50);
-
   // init DCmotors //
   for(int pin: DCpins){
     ledcAttach(pin,12800,8);
     ledcWrite(pin,0);
   }
+  // init LED //
   for(int pin: LEDpins){
     ledcAttach(pin,12800,8);
     ledcWrite(pin,0);
@@ -118,11 +85,10 @@ void setup(){
 
 void loop(){
   PS4Input();
-    //RemoteXYEngine.handler();
-    //RemoteXYInput();
+  //RemoteXYEngine.handler(); RemoteXYInput();
+
   ledcWrite(LEDpins[0],connection_flag*led_power);
-  if(connection_flag){
- 
+  if(connection_flag){ 
     //-- manage omuni --//
     if(sq(leg_joystick_x) + sq(leg_joystick_y) > sq(range_ignoreLstick)){
       setdirection(atan2(leg_joystick_y, leg_joystick_x), _direcX, _direcY);
@@ -130,10 +96,8 @@ void loop(){
       _direcX = 0; _direcY = 0;
     } // →set direcX/Y
     driveomuni(_direcX, _direcY, leg_button_R-leg_button_L,255);
-
     //-- manege yaguraarm --//
     drivemotor(YAGURAARM, 200*(yagura_L - yagura_R));
-    
     //-- manege ikarm --//
     if(sq(arm_joystick_x) + sq(arm_joystick_y) > sq(range_ignoreRstick)){
       moveTarget(arm, arm_speed*(sign(arm_joystick_x)), // dx

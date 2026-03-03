@@ -7,15 +7,17 @@
 // you can enable debug logging to Serial at 115200
 //#define REMOTEXY__DEBUGLOG    
 
-// RemoteXY select connection mode and include library 
-//#define REMOTEXY_MODE__ESP32CORE_BLUETOOTH
-//#include <BluetoothSerial.h>
-#define REMOTEXY_MODE__ESP32CORE_BLE
-#include <BLEDevice.h>
-
+// RemoteXY select connection mode and include library
+#if defined(RemoteXY_BTCL)
+  #define REMOTEXY_MODE__ESP32CORE_BLUETOOTH
+  #include <BluetoothSerial.h>
+#elif defined(RemoteXY_BLE)
+  #define REMOTEXY_MODE__ESP32CORE_BLE
+  #include <BLEDevice.h>
+#endif
 
 // RemoteXY connection settings 
-#define REMOTEXY_BLUETOOTH_NAME "RemoteXY"
+#define REMOTEXY_BLUETOOTH_NAME "HaruRobo"
 
 
 #include <RemoteXY.h>
