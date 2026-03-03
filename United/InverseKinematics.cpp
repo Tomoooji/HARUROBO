@@ -1,6 +1,6 @@
 #include "InverseKinematics.h"
 
-IK3::IK3(const int* lengths, const float* angles) :
+IK3::IK3(const int lengths[], const float angles[]) :
   armLength(lengths), defaultAngle(angles) {
   this->_sqLength[0] = sq(this->armLength[0]);
   this->_sqLength[1] = sq(this->armLength[1]);
@@ -8,7 +8,7 @@ IK3::IK3(const int* lengths, const float* angles) :
 
 void InitIK(IK3& ik){
   setTarget(ik, 10, 10);//
-  setWrist(0);
+  setWrist(ik,0);
   calcAngle(ik);
 }
 
@@ -27,7 +27,7 @@ void moveTarget(IK3& ik, float dx, float dy){//, float da){
 }
 
 void setWrist(IK3& ik, float a){
-  ik.jointAngle[2] = a;
+  ik.servoAngle[2] = a;
 }
 void moveWrist(IK3& ik, float da){
   moveWrist(ik, ik.jointAngle[2]+da);
@@ -46,7 +46,7 @@ void calcAngle(IK3& ik){
   ik.servoAngle[0] = clip2pi(ik.jointAngle[0] - ik.defaultAngle[0]);
   ik.servoAngle[1] = clip2pi(ik.jointAngle[1] - ik.defaultAngle[1]);
   
-  ik.servoAngle[2] = clip2pi(ik.jointAngle[2] - ik.defaultAngle[2]);
+  //ik.servoAngle[2] = clip2pi(ik.jointAngle[2] - ik.defaultAngle[2]);
 }
 
 float clip2pi(float ang){
