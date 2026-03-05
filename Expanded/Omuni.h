@@ -70,8 +70,8 @@ void drivemotor(int index, int speed = DC_default_speed){
 
 // drive leg motors
 void driveomuni(int direcX, int direcY, int turn, int speedVal = DC_default_speed){
-  drivemotor(FRONTRIGHT,speedVal*sign(direcY -direcX -turn));
-  drivemotor(BACKRIGHT, speedVal*sign(direcY +direcX -turn));
-  drivemotor(BACKLEFT , speedVal*sign(direcY -direcX +turn));
-  drivemotor(FRONTLEFT, speedVal*sign(direcY +direcX +turn));
+  drivemotor(FRONTRIGHT,speedVal*sign(direcY -direcX -turn)*leg_speed_gains[FRONTRIGHT]);
+  drivemotor(BACKRIGHT, speedVal*sign(direcY +direcX -turn)*leg_speed_gains[BACKRIGHT]);
+  drivemotor(BACKLEFT , speedVal*sign(direcY -direcX +turn)*leg_speed_gains[BACKLEFT]);
+  drivemotor(FRONTLEFT, speedVal*sign(direcY +direcX +turn)*leg_speed_gains[FRONTLEFT]);
 }

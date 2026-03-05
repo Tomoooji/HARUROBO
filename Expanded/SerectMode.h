@@ -22,6 +22,10 @@ inline void PS4Input(){
   
   hand_button_UP = PS4.L1();
   hand_button_DOWN=PS4.R1();
+
+  //arm_button_init = PS4.Up();
+  //arm_button_pick = PS4.Square();
+  //arm_button_drop = PS4.Triangle();
 }
 
 #elif defined(RemoteXY_BLE) || defined(RemoteXY_BTCL)
@@ -46,6 +50,12 @@ inline void RemoteXYInput(){
   
   hand_button_UP = RemoteXY.button_07;
   hand_button_DOWN=RemoteXY.button_08;
+
+  arm_button_init = RemoteXY.selectorSwitch_01 == 1;
+  arm_button_pick = RemoteXY.selectorSwitch_01 == 2;
+  arm_button_drop = RemoteXY.selectorSwitch_01 == 3;
+
+  //selectorSwitch_01
 }
 #endif
 

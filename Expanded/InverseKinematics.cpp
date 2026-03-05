@@ -8,7 +8,7 @@ IK3::IK3(const int lengths[], const float angles[]) :
 
 void InitIK(IK3& ik){
   setTarget(ik, 10, 10);//
-  setWrist(ik,0);
+  //setWrist(ik,0);
   calcAngle(ik);
 }
 
@@ -20,9 +20,11 @@ void moveTarget(IK3& ik, float dx, float dy){//, float da){
   if(dx || dy){// || da){
     ik._wristx += constrain(dx, -MAX_SPEED_XY, MAX_SPEED_XY);
     ik._wristy += constrain(dy, -MAX_SPEED_XY, MAX_SPEED_XY);
-    //ik.a = clip2pi(ik.a + constrain(da, -MAX_SPEED_A, MAX_SPEED_A));
-    //ik._wristx = ik.armLength[2] * cos(ik.a) + ik.x;
-    //ik._wristy = ik.armLength[2] * sin(ik.a) + ik.y;
+    //Serial.print(ik._wristx); Serial.print(",");
+    //Serial.print(ik._wristy); Serial.print(",");
+    ///ik.a = clip2pi(ik.a + constrain(da, -MAX_SPEED_A, MAX_SPEED_A));
+    ///ik._wristx = ik.armLength[2] * cos(ik.a) + ik.x;
+    ///ik._wristy = ik.armLength[2] * sin(ik.a) + ik.y;
   }
 }
 
@@ -50,8 +52,8 @@ void calcAngle(IK3& ik){
 }
 
 void getTarget(IK3& ik){
-  ik.wristx = (cos(ik.jointAngle[0])*ik.armLength[0]) + (cos(ik.jointAngle[0]+ik.jointAngle[1]-PI)*ik.armLength[1]);
-  ik.wristy = (sin(ik.jointAngle[0])*ik.armLength[0]) + (sin(ik.jointAngle[0]+ik.jointAngle[1]-PI)*ik.armLength[1]);
+  ik._wristx = (cos(ik.jointAngle[0])*ik.armLength[0]) + (cos(ik.jointAngle[0]+ik.jointAngle[1]-PI)*ik.armLength[1]);
+  ik._wristy = (sin(ik.jointAngle[0])*ik.armLength[0]) + (sin(ik.jointAngle[0]+ik.jointAngle[1]-PI)*ik.armLength[1]);
 }
 
 

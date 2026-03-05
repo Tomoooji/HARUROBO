@@ -12,15 +12,20 @@ constexpr int YAGURAARM  = 4;
 
 // 定数 //
 constexpr int DC_default_speed = 200;
+constexpr float leg_speed_gains[] = {1, 1, 1, 1};
 constexpr float range_othogonal = radians(25); // 前後左右に±50°,斜めは±40°
 constexpr int range_ignoreLstick = 40;
 constexpr int line_RL2pushed = 50;
 
 constexpr int range_ignoreRstick = 20;
-constexpr float arm_speed = 1.25;
+constexpr float arm_speed = 1;//1.25;
 constexpr float wrist_speed = 0.05; // radians
 constexpr int hand_speed = 6; // degrees
 constexpr int hand_min = 40, hand_max = 140; // degrees
+
+constexpr float arm_init_pos[] = {1.42, 0.33, 0.00};
+constexpr float arm_pick_pos[] = {};
+constexpr float arm_drop_pos[] = {};
 
 constexpr int led_power = 150;
 
@@ -45,7 +50,7 @@ bool yagura_R, yagura_L;
 
 int arm_joystick_x, arm_joystick_y;
 bool arm_button_UP, arm_button_DOWN;
-bool arm_button_init, arm_button_chatch, arm_button_shoot;
+bool arm_button_init, arm_button_pick, arm_button_drop;
 
 bool hand_button_UP, hand_button_DOWN;
 
@@ -58,6 +63,7 @@ bool hand_button_UP, hand_button_DOWN;
 int _direcX, _direcY; // 触るべからず
 IK3 arm=IK3(ArmLength, InitalAngle);
 int _handAng = 90;
+float leg_speed = 1.0;
 
 void setup(){
   Serial.begin(9600);/////
@@ -68,8 +74,8 @@ void setup(){
   InitIK(arm);
 
   // init servo motors //
-  servo_pwm.begin();
-  servo_pwm.setPWMFreq(50);
+  //servo_pwm.begin();
+  //servo_pwm.setPWMFreq(50);
 
   // init DCmotors //
   for(int pin: DCpins){
@@ -95,7 +101,7 @@ void loop(){
     }else{
       _direcX = 0; _direcY = 0;
     } // →set direcX/Y
-    driveomuni(_direcX, _direcY, leg_button_R-leg_button_L,255);
+    driveomuni(_direcX, _direcY, leg_button_R-leg_button_L,255*leg_speed);
 
     //-- manege yaguraarm --//
     drivemotor(YAGURAARM, 200*(yagura_L - yagura_R));
@@ -110,27 +116,30 @@ void loop(){
     
     ///////moveWrist(arm, wrist_speed*(arm_button_UP - arm_button_DOWN));// dang
     //arm.servoAngle[2] += wrist_speed*(arm_button_UP - arm_button_DOWN);
-    arm.servoAngle[2] = constrain(arm.servoAngle[2] + +wrist_speed*(arm_button_UP - arm_button_DOWN),0,PI);
+    arm.servoAngle[2] = constrain(arm.servoAngle[2] +wrist_speed*(arm_button_UP - arm_button_DOWN),0,PI);
     // →wrist angle
     
     _handAng = constrain(_handAng + hand_speed*(hand_button_UP - hand_button_DOWN), hand_min, hand_max);
     //　→hand(finger) angle
     
     if(arm_button_init){
-      arm.servoAngle[0] = ;
-      arm.servoAngle[0] = ;
-      arm.servoAngle[0] = ;
+      Serial.println("Init Positon");
+      arm.jointAngle[0] = arm_init_pos[0];
+      arm.jointAngle[1] = arm_init_pos[1];
+      arm.jointAngle[2] = arm_init_pos[2];
     }
 
-    updateservo(arm, _handAng);//, Channels);// handだけdegreesだけど許してちょ♡
+    //updateservo(arm, _handAng);//, Channels);// handだけdegreesだけど許してちょ♡
     // →apply angles
     
-    ////////
-    Serial.print(degrees(arm.servoAngle[0])); Serial.print(",");
-    Serial.print(degrees(arm.servoAngle[1])); Serial.print(",");
-    Serial.println(degrees(arm.servoAngle[2]));// Serial.print(",");
+    /////////
+    Serial.print((arm.jointAngle[0])); Serial.print(",");
+    Serial.print((arm.jointAngle[1])); Serial.print(",");
+    Serial.print((arm.jointAngle[2])); Serial.print(",");
+    Serial.print(degrees(arm._wristx)); Serial.print(",");
+    Serial.println(degrees(arm._wristy));// Serial.print(",");
     //Serial.println(_handAng);
-    //////////
+    //*////////
 
   }else{
     for(int pin: DCpins){
@@ -140,5 +149,5 @@ void loop(){
   }
 
   //delay(10);
-  RemoteXYEngine.delay(50);
+  RemoteXYEngine.delay(100);
 }

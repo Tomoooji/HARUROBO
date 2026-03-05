@@ -27,7 +27,7 @@ void setTarget(IK3& ik, float x, float y);//, float a);
 void moveTarget(IK3& ik, float dx, float dy);//, float da);
 void setWrist(IK3& ik, float a);
 void moveWrist(IK3& ik, float da);
-void getTarget(IK& ik);
+void getTarget(IK3& ik);
 //void animate(IK3& ik);
 void calcAngle(IK3& ik);
 float clip2pi(float ang);
