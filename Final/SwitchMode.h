@@ -32,8 +32,7 @@
 #elif defined(REMOTEXY_BTCL) || defined(REMOTEXY_BLE)
   #include "Rimocon_RemoteXY.h"
   constexpr float range_othogonal = radians(25); // 前後左右に±50°,斜めは±40°
-  constexpr int range_ignoreLstick = 40;
-  constexpr int line_RL2pushed = 50;
+  constexpr int range_ignoreLstick = 20;
   constexpr int range_ignoreRstick = 20;
 
   // update controller values
