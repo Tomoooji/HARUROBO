@@ -1,6 +1,5 @@
 // 入力用変数 //
 bool connection_flag;
-
 int leg_joystick_x, leg_joystick_y;
 bool leg_button_R, leg_button_L;
 bool leg_button_shift;
@@ -12,17 +11,8 @@ bool hand_button_UP, hand_button_DOWN;
 
 #define PS4_CONTROLLER // or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER
 #include "SwitchMode.h"
-/*
-extern
-*/
 
-constexpr int FRONTRIGHT = 0;
-constexpr int BACKRIGHT  = 1;
-constexpr int BACKLEFT   = 2;
-constexpr int FRONTLEFT  = 3;
-constexpr int YAGURAARM  = 4;
-
-//  //
+// 出力用定数 //
 constexpr int DC_default_speed = 200;
 constexpr float leg_motor_gains[] = {1, 1, 1, 1};
 constexpr int SERVOMAX = 470, SERVOMIN = 120;
@@ -34,8 +24,8 @@ constexpr int led_power = 150;
 constexpr float arm_pos_init[] = {1.42, 0.33, 0.00}; //radian
 constexpr float arm_pos_pick[] = {}; //radian
 constexpr float arm_pos_drop[] = {}; //radian
-//  //
-//constexpr char MAC_PS4CON[] = "e4:65:b8:d8:d4:80";
+
+//--環境依存定数--//
 constexpr int DCpins[]={
 //  FR     BR      BL      FL    yagura 
   16, 17, 2, 15, 14, 12, 26, 27, 25, 33
@@ -48,7 +38,7 @@ constexpr float InitalAngle[] = {
   radians(0),radians(0),radians(90)
 };//{-30, 0, -30};
 
-//----//
+//--出力用変数--//
 #include "OmuniLeg.h"
 #include "IKArm.h"
 
@@ -58,16 +48,20 @@ Arm sakuarm(ArmLength, InitalAngle);
 
 void setup(){
   Serial.begin(9600);
+
   //--init controller--//
   //PS4.begin(MAC_PS4CON);
   RemoteXY_Init();
   //Serial2.begin(9600,SERIAL_8N1, 16, 17);
+
   //--init DCmotors--//
   for(int pin: DCpins){
     ledcAttach(pin,12800,8);
     ledcWrite(pin,0);
   }
+
   //--init Arm--//
+  sakuarm.begin(true);
 
   //--init LED--//
   for(int pin: LEDpins){
@@ -81,6 +75,7 @@ void loop(){
   //PS4Input();
   RemoteXYEngine.handler(); RemoteXYInput();
   //SerialInput();
+
   //--process logic--//
   if(connection_flag){
   //-manage omuni-//
@@ -95,6 +90,8 @@ void loop(){
 
   //-manage yagura-//
     drivemotor(YAGURAARM, 200*(yagura_L - yagura_R));
+
+  //-manage ikarm-//
     if(sq(arm_joystick_x) + sq(arm_joystick_y) > sq(range_ignoreRstick+10)){
       sakuarm.moveWrist(arm_speed *0.01*(arm_joystick_x), // should be changed about  arm_speed*0.01*..
                         arm_speed *0.01*(arm_joystick_y));//
@@ -102,7 +99,6 @@ void loop(){
     sakuarm.rotateHand(wrist_speed*(arm_button_UP - arm_button_DOWN));
     sakuarm.moveFinger(hand_speed*(hand_button_UP - hand_button_DOWN));
     sakuarm.updateServos();
-  //-manage ikarm-//
 
   }else{
 
@@ -115,6 +111,7 @@ void loop(){
   Serial.println(sakuarm.Ik.wrist[1]);
   //*///-----------------
   ledcWrite(LEDpins[0],connection_flag*led_power);
+
   //delay(10);
   RemoteXYEngine.delay(50);
 }
