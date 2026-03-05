@@ -46,6 +46,7 @@ constexpr int LEDpins[]={32};
 bool connection_flag;
 int leg_joystick_x, leg_joystick_y;
 bool leg_button_R, leg_button_L;
+bool leg_button_shift;
 bool yagura_R, yagura_L;
 
 int arm_joystick_x, arm_joystick_y;
@@ -101,6 +102,7 @@ void loop(){
     }else{
       _direcX = 0; _direcY = 0;
     } // →set direcX/Y
+    //if(leg_button_shift)leg_speed = (leg_speed==1.0? 0.5:1.0);
     driveomuni(_direcX, _direcY, leg_button_R-leg_button_L,255*leg_speed);
 
     //-- manege yaguraarm --//

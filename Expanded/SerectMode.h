@@ -11,6 +11,7 @@ inline void PS4Input(){
   leg_joystick_y = PS4.LStickY();
   leg_button_R = PS4.R2Value() > line_RL2pushed;
   leg_button_L = PS4.L2Value() > line_RL2pushed;
+  leg_button_shift = PS4.L3();
   
   yagura_L = PS4.Left();
   yagura_R = PS4.Right();
@@ -39,6 +40,7 @@ inline void RemoteXYInput(){
   leg_joystick_y = RemoteXY.joystick_01_y;
   leg_button_R = RemoteXY.button_01;
   leg_button_L = RemoteXY.button_02;
+  //leg_button_shift;
 
   yagura_L = RemoteXY.button_03;
   yagura_R = RemoteXY.button_04;
