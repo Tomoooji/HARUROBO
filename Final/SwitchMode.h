@@ -3,8 +3,11 @@
 
 #if defined(PS4_CONTROLLER)
   #include <PS4Controller.h>
-
   constexpr char MAC_PS4CON[] = "e4:65:b8:d8:d4:80";
+  constexpr float range_othogonal = radians(25); // 前後左右に±50°,斜めは±40°
+  constexpr int range_ignoreLstick = 40;
+  constexpr int line_RL2pushed = 50;
+  constexpr int range_ignoreRstick = 20;
 
   inline void PS4Input(){
     connection_flag = PS4.isConnected();
@@ -19,15 +22,20 @@
     arm_joystick_y = PS4.RStickY();
     arm_button_UP =PS4.Circle();
     arm_button_DOWN =PS4.Cross();
-    hand_button_UP = PS4.L1();
-    hand_button_DOWN=PS4.R1();
-    //arm_button_init = PS4.Up();
-    //arm_button_pick = PS4.Square();
-    //arm_button_drop = PS4.Triangle();
+    arm_button_init = PS4.Up();
+    arm_button_pick = PS4.Square();
+    arm_button_drop = PS4.Triangle();
+    finger_button_UP = PS4.L1();
+    finger_button_DOWN=PS4.R1();
   }
 
 #elif defined(REMOTEXY_BTCL) || defined(REMOTEXY_BLE)
-  #include "RemoteXYrimocon.h"
+  #include "Rimocon_RemoteXY.h"
+  constexpr float range_othogonal = radians(25); // 前後左右に±50°,斜めは±40°
+  constexpr int range_ignoreLstick = 40;
+  constexpr int line_RL2pushed = 50;
+  constexpr int range_ignoreRstick = 20;
+
   // update controller values
   inline void RemoteXYInput(){
     connection_flag = RemoteXY.connect_flag;
@@ -42,12 +50,13 @@
     arm_joystick_y = RemoteXY.joystick_02_y;
     arm_button_UP = RemoteXY.button_05;
     arm_button_DOWN=RemoteXY.button_06;
-    hand_button_UP = RemoteXY.button_07;
-    hand_button_DOWN=RemoteXY.button_08;
     arm_button_init = RemoteXY.selectorSwitch_01 == 1;
     arm_button_pick = RemoteXY.selectorSwitch_01 == 2;
     arm_button_drop = RemoteXY.selectorSwitch_01 == 3;
+    finger_button_UP = RemoteXY.button_07;
+    finger_button_DOWN=RemoteXY.button_08;
   }
+
 #elif defined(SERIAL_CONTROLLER)
   #include "Rimocon_Serial.h"
   inline void SerialInput(){}
