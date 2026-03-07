@@ -11,7 +11,7 @@ constexpr int YAGURAARM  = 4;
 
 //-- LOGICs --//
 // set 8 direction form -pi~pi angle
-void setdirection(float inputAngle, int& direcX, int& direcY){
+inline void setdirection(float inputAngle, int& direcX, int& direcY){
   // form -PI to PI
   if(inputAngle > PI -range_othogonal || inputAngle < -PI +range_othogonal){
     // LEFT
@@ -62,7 +62,7 @@ void setdirection(float inputAngle, int& direcX, int& direcY){
 //-- OUTPUTs --//
 
 // drive dc motor
-void drivemotor(int index, int speed = DC_default_speed){
+inline void drivemotor(int index, int speed = DC_default_speed){
     speed = constrain(speed, -255, 255);
   if (speed > 0) {
     ledcWrite(DCpins[index*2], speed);
@@ -74,7 +74,7 @@ void drivemotor(int index, int speed = DC_default_speed){
 }
 
 // drive leg motors
-void driveomuni(int direcX, int direcY, int turn, int speedVal = DC_default_speed){
+inline void driveomuni(int direcX, int direcY, int turn, int speedVal = DC_default_speed){
   drivemotor(FRONTRIGHT,speedVal*sign(direcY -direcX -turn)*leg_motor_gains[FRONTRIGHT]);
   drivemotor(BACKRIGHT, speedVal*sign(direcY +direcX -turn)*leg_motor_gains[BACKRIGHT]);
   drivemotor(BACKLEFT , speedVal*sign(direcY -direcX +turn)*leg_motor_gains[BACKLEFT]);

@@ -38,7 +38,7 @@ constexpr int DCpins[]={ // IBT_2用信号線のピン
 constexpr int Channels[] = { // PCA9685の使用チャンネル(根本→手先順)
   0, 2, 4, 6
 };
-constexpr int ArmLength[] = {36, 26, 21}; // アーム関節角度(3個目は不使用)
+constexpr int ArmLength[] = {36, 26, 21}; // アーム関節長さ(3個目は不使用)
 constexpr int InitalAngle[] = {0, 0, 90}; // アームのサーボ取付角度(完全折り畳み時が0°)
 constexpr int LEDpins[]={32, 4, 0}; //       動作チェック用LEDのピン(接続,アーム閾値,低速走行)
 
