@@ -1,44 +1,46 @@
-// 入力用変数 //
-bool connection_flag;
-int leg_joystick_x, leg_joystick_y;
-int leg_direc; // 0~8
-bool leg_button_R, leg_button_L;
-bool leg_button_shift;
-bool yagura_R, yagura_L;
-int arm_joystick_x, arm_joystick_y;
+//--入力用変数--//
+bool connection_flag; //                      接続確認用
+int leg_joystick_x, leg_joystick_y; //        足回り方向指定
+int leg_direc; //                             足回り方向指定(ジョイスティック以外のUI用)
+bool leg_button_R, leg_button_L; //           旋回方向
+bool leg_button_shift; //                     低速走行
+bool yagura_R, yagura_L; //                   櫓用アーム開閉
+int arm_joystick_x, arm_joystick_y; //        アーム手首位置操作
 bool arm_zplus, arm_zminus, arm_yplus, arm_yminus;
-bool arm_button_UP, arm_button_DOWN;
+  //                                          アーム手首位置操作(ジョイスティック以外のUI用)
+bool arm_button_UP, arm_button_DOWN; //       アーム手首角度調節
 bool arm_button_init, arm_button_pick, arm_button_drop;
-bool finger_button_UP, finger_button_DOWN;
+  //                                          アームの指定位置コマンド
+bool finger_button_UP, finger_button_DOWN; // ハンドの開閉
 
 //PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER
 #define PS4_CONTROLLER
 #include "SwitchMode.h"
 
-// 出力用定数 //
-constexpr int DC_default_speed = 200;
-constexpr float leg_motor_gains[] = {1, 1, 1, 1};
-constexpr int SERVOMAX = 470, SERVOMIN = 120;
-constexpr float arm_speed = 1;//1.25
-constexpr int wrist_speed = 3; //degree
-constexpr int finger_speed = 6; //degree
-constexpr int led_power = 150;
+//--出力用定数--//
+constexpr int DC_default_speed = 150; //             櫓用アームの回転速度(足回りは255)[n/255]
+constexpr float leg_motor_gains[] = {1, 1, 1, 1}; // 足回りモーターの速度定数[最大のn倍]
+constexpr int SERVOMAX = 470, SERVOMIN = 120; //     PCA9685に渡す周波数のレンジ(基本変更しない)
+constexpr float arm_speed = 1;//1.25 //              アーム手首位置の移動速度[n*0.6cm(←目安)]
+constexpr int wrist_speed = 3; //                    アーム手首角度の回転速度[degree]
+constexpr int finger_speed = 6; //                   ハンドの回転速度[degree]
+constexpr int led_power = 150; //                    動作チェック用LEDの強さ
 
-constexpr float arm_pos_init[] = {45.08/4, 80.88/4, 0.00}; //{1.42, 0.33, 0.00};
-constexpr float arm_pos_pick[] = {162.24/4,-85.44/4, 2.72};//{0.00, 1.76, 2.72};
-constexpr float arm_pos_drop[] = {-206.56/4, 126.6/4, 2.54};//{2.75, 2.67, 2.54};
+constexpr float arm_pos_init[] = { 45.08/4,  80.88/4, 0.00}; // アーム待機位置x,yと手首角度[degree]
+constexpr float arm_pos_pick[] = {162.24/4, -85.44/4, 2.72}; // ワーク拾う位置x,yと手首角度[degree]
+constexpr float arm_pos_drop[] = {-206.56/4, 126.6/4, 2.54}; // ワークセット位置x,yと手首角度[degree]
 
 //--環境依存定数--//
-constexpr int DCpins[]={
+constexpr int DCpins[]={ // IBT_2用信号線のピン
 //  FR      BR      BL      FL    yagura 
    2, 15, 14, 12, 26, 27, 18,  5, 25, 33
 };
-constexpr int Channels[] = {
+constexpr int Channels[] = { // PCA9685の使用チャンネル(根本→手先順)
   0, 2, 4, 6
 };
-constexpr int ArmLength[] = {36, 26, 21};
-constexpr int InitalAngle[] = {0, 0, 90};//{-30, 0, -30};
-constexpr int LEDpins[]={32, 4, 0};
+constexpr int ArmLength[] = {36, 26, 21}; // アーム関節角度(3個目は不使用)
+constexpr int InitalAngle[] = {0, 0, 90}; // アームのサーボ取付角度(完全折り畳み時が0°)
+constexpr int LEDpins[]={32, 4, 0}; //       動作チェック用LEDのピン(接続,アーム閾値,低速走行)
 
 //--出力用変数--//
 #include "OmuniLeg.h"
@@ -80,7 +82,6 @@ void loop(){
 
   //--process logic--//
   if(connection_flag){
-    //Serial.println(yagura_R);
   //-manage omuni-//
     if(sq(leg_joystick_x) + sq(leg_joystick_y) > sq(range_ignoreLstick)){
       setdirection(atan2(leg_joystick_y, leg_joystick_x), _direcX, _direcY);
@@ -116,7 +117,7 @@ void loop(){
     driveomuni(_direcX, _direcY, leg_button_R-leg_button_L, 255 *(leg_slow+0.5));
 
   //-manage yagura-//
-    drivemotor(YAGURAARM, 200*(yagura_L - yagura_R));
+    drivemotor(YAGURAARM, DC_default_speed *(yagura_L - yagura_R));
 
   //-manage ikarm-//
     if(arm_button_init){
