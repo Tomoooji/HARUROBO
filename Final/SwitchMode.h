@@ -15,7 +15,7 @@
     leg_joystick_y = PS4.LStickY();
     leg_button_R = PS4.R2Value() > line_RL2pushed;
     leg_button_L = PS4.L2Value() > line_RL2pushed;
-    leg_button_shift = PS4.L3();
+    leg_button_shift = PS4.Down();
     yagura_L = PS4.Left();
     yagura_R = PS4.Right();
     arm_joystick_x = PS4.RStickX();
@@ -37,7 +37,7 @@
 
   // update controller values
   inline void RemoteXYInput(){
-    connection_flag = RemoteXY.connect_flag;
+    connection_flag = RemoteXY.connect_flag && RemoteXY.pushSwitch_02;
     leg_joystick_x = RemoteXY.joystick_01_x;
     leg_joystick_y = RemoteXY.joystick_01_y;
     leg_button_R = RemoteXY.button_01;
@@ -58,7 +58,7 @@
 
 #elif defined(SERIAL_CONTROLLER)
   #include "Rimocon_Serial.h"
-  inline void SerialInput(){}
+  constexpr float range_othogonal = 0.0;
 #endif
 
 inline int sign(auto x){return (x>0)-(x<0);}

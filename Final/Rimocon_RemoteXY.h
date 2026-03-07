@@ -23,9 +23,9 @@
 
 // RemoteXY GUI configuration  
 #pragma pack(push, 1)
-uint8_t const PROGMEM RemoteXY_CONF_PROGMEM[] =   // 273 bytes V19 
-  { 255,14,0,0,0,10,1,19,0,0,0,0,31,2,106,200,200,84,1,1,
-  15,0,5,209,12,143,143,11,20,60,60,32,2,26,31,5,5,43,143,143,
+uint8_t const PROGMEM RemoteXY_CONF_PROGMEM[] =   // 294 bytes V19 
+  { 255,15,0,0,0,31,1,19,0,0,0,0,31,2,106,200,200,84,1,1,
+  16,0,5,209,12,143,143,11,20,60,60,32,2,26,31,5,5,43,143,143,
   118,20,60,60,32,2,26,31,1,235,5,57,57,6,5,20,20,0,2,31,
   229,183,166,0,1,15,7,57,57,57,6,20,20,0,2,31,229,143,179,0,
   1,71,52,57,57,70,63,22,13,1,2,31,233,150,137,0,1,71,122,57,
@@ -37,7 +37,8 @@ uint8_t const PROGMEM RemoteXY_CONF_PROGMEM[] =   // 273 bytes V19
   31,233,129,133,0,31,233,128,159,0,129,242,7,71,29,28,10,27,9,64,
   17,232,182,179,229,155,158,227,130,138,0,129,28,50,71,29,83,77,24,8,
   64,17,227,130,132,227,129,144,227,130,137,0,129,43,0,71,29,134,9,27,
-  9,64,17,227,131,143,227,131,179,227,131,137,0 };
+  9,64,17,227,131,143,227,131,179,227,131,137,0,10,47,43,57,57,189,0,
+  11,11,49,4,26,31,79,70,70,0,31,79,78,0 };
   
 // this structure defines all the variables and events of your control interface 
 struct {
@@ -57,6 +58,7 @@ struct {
   uint8_t button_08; // =1 if button pressed, else =0, from 0 to 1
   uint8_t selectorSwitch_01; // from 0 to 4
   uint8_t pushSwitch_01; // =1 if state is ON, else =0, from 0 to 1
+  uint8_t pushSwitch_02; // =1 if state is ON, else =0, from 0 to 1
 
     // other variable
   uint8_t connect_flag;  // =1 if wire connected, else =0
