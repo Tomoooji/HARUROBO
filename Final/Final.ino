@@ -14,7 +14,7 @@ bool arm_button_init, arm_button_pick, arm_button_drop;
   //                                          アームの指定位置コマンド
 bool finger_button_UP, finger_button_DOWN; // ハンドの開閉
 bool clow_button_UP, clow_button_DOWN; //     ワークを引きずるやつ
-//bool appeal_button;
+bool appeal_button;
 
 //PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER
 #define REMOTEXY_BLE
@@ -86,7 +86,22 @@ void loop(){
 
   //--process logic--//
   if(disconnect_button && connection_flag) connection_flag = !connection_falg;
-  if(connection_flag){
+  if(appeal_button){
+      for(int pin: DCpins){
+      ledcWrite(pin,0);
+    }
+    for(int pin:LEDpins){
+      ledcWrite(pin, led_power);
+    }
+    //dely(1500);
+    RemoteXYEngine.delay(1500);
+    for(int pin:LEDpins){
+      ledcWrite(pin, 0);
+    }
+    //dely(1500);
+    RemoteXYEngine.delay(1500);
+  }
+  else if(connection_flag){
   //-manage omuni-//
     if(sq(leg_joystick_x) + sq(leg_joystick_y) > sq(range_ignoreLstick)){
       setdirection(atan2(leg_joystick_y, leg_joystick_x), _direcX, _direcY);

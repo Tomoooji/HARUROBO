@@ -12,6 +12,7 @@
   inline void PS4Input(){
     connection_flag = PS4.isConnected();
     disconnection_button = PS4.Touchpad();//
+    appeal_button = PS4.Share() && PS4.Options();
     leg_joystick_x = PS4.LStickX();
     leg_joystick_y = PS4.LStickY();
     leg_button_R = PS4.R2Value() > line_RL2pushed;
@@ -41,6 +42,7 @@
   // update controller values
   inline void RemoteXYInput(){
     connection_flag = RemoteXY.connect_flag && RemoteXY.pushSwitch_02;
+    appeal_button = RemoteXY.button_03 && RemoteXY.button_04;
     leg_joystick_x = RemoteXY.joystick_01_x;
     leg_joystick_y = RemoteXY.joystick_01_y;
     leg_button_R = RemoteXY.button_01;
