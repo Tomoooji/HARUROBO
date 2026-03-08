@@ -1,6 +1,7 @@
-//#define RemoteXY_BLE
+// モード選択 //
+#define RemoteXY_BLE
 //#define RemoteXY_BTCL
-#define PS4_RIMOCON
+//#define PS4_RIMOCON
 
 
 // 定義 //
@@ -63,14 +64,14 @@ int _handAng = 90;
 void setup(){
   Serial.begin(9600);/////
 
-  PS4.begin(MAC_PS4CON);
-  //RemoteXY_Init();
+  //PS4.begin(MAC_PS4CON);
+  RemoteXY_Init();
 
   InitIK(arm);
 
   // init servo motors //
-  servo_pwm.begin();
-  servo_pwm.setPWMFreq(50);
+  //servo_pwm.begin();
+  //servo_pwm.setPWMFreq(50);
   // init DCmotors //
   for(int pin: DCpins){
     ledcAttach(pin,12800,8);
@@ -84,8 +85,8 @@ void setup(){
 }
 
 void loop(){
-  PS4Input();
-  //RemoteXYEngine.handler(); RemoteXYInput();
+  //PS4Input();
+  RemoteXYEngine.handler(); RemoteXYInput();
 
   ledcWrite(LEDpins[0],connection_flag*led_power);
   if(connection_flag){ 
@@ -113,13 +114,15 @@ void loop(){
     _handAng = constrain(_handAng + hand_speed*(hand_button_UP - hand_button_DOWN), hand_min, hand_max);
     //　→hand(finger) angle
     
-    updateservo(arm, _handAng);//, Channels);// handだけdegreesだけど許してちょ♡
+    //updateservo(arm, _handAng);//, Channels);// handだけdegreesだけど許してちょ♡
     // →apply angles
     
     ////////
     Serial.print(degrees(arm.servoAngle[0])); Serial.print(",");
     Serial.print(degrees(arm.servoAngle[1])); Serial.print(",");
-    Serial.println(degrees(arm.servoAngle[2]));// Serial.print(",");
+    Serial.print(degrees(arm.servoAngle[2])); Serial.print(",");
+    Serial.print(degrees(arm._wristx)); Serial.print(",");
+    Serial.println(degrees(arm._wristy));// Serial.print(",");
     //Serial.println(_handAng);
     //////////
 
@@ -130,6 +133,6 @@ void loop(){
     Serial.println();
   }
 
-  delay(10);
-    //RemoteXYEngine.delay(50);
+  //delay(10);
+  RemoteXYEngine.delay(50);
 }

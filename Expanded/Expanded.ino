@@ -134,14 +134,14 @@ void loop(){
     //updateservo(arm, _handAng);//, Channels);// handだけdegreesだけど許してちょ♡
     // →apply angles
     
-    /////////
-    Serial.print((arm.jointAngle[0])); Serial.print(",");
-    Serial.print((arm.jointAngle[1])); Serial.print(",");
-    Serial.print((arm.jointAngle[2])); Serial.print(",");
+    ////////
+    Serial.print(degrees(arm.servoAngle[0])); Serial.print(",");
+    Serial.print(degrees(arm.servoAngle[1])); Serial.print(",");
+    Serial.print(degrees(arm.servoAngle[2])); Serial.print(",");
     Serial.print(degrees(arm._wristx)); Serial.print(",");
     Serial.println(degrees(arm._wristy));// Serial.print(",");
     //Serial.println(_handAng);
-    //*////////
+    //////////
 
   }else{
     for(int pin: DCpins){
