@@ -1,5 +1,6 @@
 //--入力用変数--//
 bool connection_flag; //                      接続確認用
+bool disconect_button;
 int leg_joystick_x, leg_joystick_y; //        足回り方向指定
 int leg_direc; //                             足回り方向指定(ジョイスティック以外のUI用)
 bool leg_button_R, leg_button_L; //           旋回方向
@@ -13,6 +14,7 @@ bool arm_button_init, arm_button_pick, arm_button_drop;
   //                                          アームの指定位置コマンド
 bool finger_button_UP, finger_button_DOWN; // ハンドの開閉
 bool clow_button_UP, clow_button_DOWN; //     ワークを引きずるやつ
+//bool appeal_button;
 
 //PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER
 #define REMOTEXY_BLE
@@ -83,6 +85,7 @@ void loop(){
   //connection_flag = SerialInput();
 
   //--process logic--//
+  if(disconnect_button && connection_flag) connection_flag = !connection_falg;
   if(connection_flag){
   //-manage omuni-//
     if(sq(leg_joystick_x) + sq(leg_joystick_y) > sq(range_ignoreLstick)){
