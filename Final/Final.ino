@@ -60,7 +60,7 @@ void setup(){
   //--init controller--//
   //PS4.begin(MAC_PS4CON);
   RemoteXY_Init();
-  //Serial2.begin(115200,SERIAL_8N1, 16, 17);
+  ////Serial2.begin(115200,SERIAL_8N1, 16, 17);
 
   //--init DCmotors--//
   for(int pin: DCpins){
@@ -91,35 +91,17 @@ void loop(){
     if(sq(leg_joystick_x) + sq(leg_joystick_y) > sq(range_ignoreLstick)){
       setdirection(atan2(leg_joystick_y, leg_joystick_x), _direcX, _direcY);
     }
-    //if(leg_direc){
-    //  switch(leg_direc){
-    //    case 1:
-    //      _direcX =-1; _direcY = 0; break;
-    //    case 2:
-    //      _direcX =-1; _direcY =-1; break;
-    //    case 3:
-    //      _direcX = 0; _direcY =-1; break;
-    //    case 4:
-    //      _direcX = 1; _direcY =-1; break;
-    //    case 5:
-    //      _direcX = 1; _direcY = 0; break;
-    //    case 6:
-    //      _direcX = 1; _direcY = 1; break;
-    //    case 7:
-    //      _direcX = 0; _direcY = 1; break;
-    //    case 8:
-    //      _direcX =-1; _direcY = 1; break;
-    //  }
-    //}
     else{
       _direcX = 0; _direcY = 0;
     } // →set direcX/Y
+
     /*if(leg_button_shift){
       leg_slow = !leg_slow;
       ledcWrite(LEDpins[2], leg_slow *led_power);
       //Serial.println(leg_slow);
     }*/
     ledcWrite(LEDpins[2], (leg_slow = leg_button_shift) *led_power);
+
     driveomuni(_direcX, _direcY, leg_button_R-leg_button_L, 255 *(!leg_slow+0.5));
 
   //-manage yagura-//

@@ -64,6 +64,9 @@
 #elif defined(SERIAL_CONTROLLER)
   #include "Rimocon_Serial.h"
   constexpr float range_othogonal = 0.0;
+  constexpr int range_ignoreRstick = 0;
+  constexpr int range_ignoreLstick = 0;
+
 #endif
 
 inline int sign(auto x){return (x>0)-(x<0);}

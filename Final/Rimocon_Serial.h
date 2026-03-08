@@ -1,5 +1,55 @@
 #pragma once
 
+int inputvals[10];
+
+String line;
+
+bool SerialInput(){
+  if(Serial.available()){
+    line = Serial.readStringUntil('\n');
+    if(sscanf(line.c_str(),
+        "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
+        &inputvals[0],&inputvals[1],&inputvals[2],&inputvals[3],&inputvals[4]],
+        &inputvals[5],&inputvals[6],&inputvals[7],&inputvals[8],&inputvals[9]
+        ) = 10){
+      leg_joystick_x = inputvals[0]*10;
+      leg_joystick_y = inputvals[1]*10;
+      leg_button_R = inputvals[2];
+      leg_button_L = inputvals[3];
+      yagura_button_L = inputvals[4] > 0;
+      yagura_button_R = inputvals[4] < 0;
+      arm_joystick_x = inputvals[5]*100;
+      arm_joystick_y = inputvals[6]*100;
+      arm_button_UP =    inputvals[7] > 0;
+      arm_button_DOWN =  inputvals[7] < 0;
+      finger_button_UP =   inputvals[8] > 0;
+      finger_button_DOWN = inputvals[8] < 0;
+      arm_button_init = (inputvals[9] == 1);
+      arm_button_pick = (inputvals[9] == 2);
+      arm_button_drop = (inputvals[9] == 3);
+      return true;
+    }
+  }
+  leg_joystick_x = 0;
+  leg_joystick_y = 0;
+  leg_button_R = false;
+  leg_button_L = false;
+  yagura_button_L = false;
+  yagura_button_R = false;
+  arm_joystick_x = 0;
+  arm_joystick_y = 0;
+  arm_button_UP = false;
+  arm_button_DOWN = false;
+  finger_button_UP = false;
+  finger_button_DOWN = false;
+  arm_button_init = false;
+  arm_button_pick = false;
+  arm_button_drop = false;
+
+  return false;
+}
+
+/*
 #pragma pack(1)
 struct Payload{
   uint16_t header = 0x55AA;
@@ -43,3 +93,4 @@ inline bool SerialInput(){
   }
     return false;
 }
+*/
