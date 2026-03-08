@@ -42,7 +42,7 @@
     leg_joystick_y = RemoteXY.joystick_01_y;
     leg_button_R = RemoteXY.button_01;
     leg_button_L = RemoteXY.button_02;
-    leg_button_shift = RemoteXY.pushSwitch_01;
+    leg_button_shift = RemoteXY.button_09;
     yagura_L = RemoteXY.button_03;
     yagura_R = RemoteXY.button_04;
     arm_joystick_x = RemoteXY.joystick_02_x;

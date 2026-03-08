@@ -14,7 +14,7 @@ bool arm_button_init, arm_button_pick, arm_button_drop;
 bool finger_button_UP, finger_button_DOWN; // ハンドの開閉
 
 //PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER
-#define PS4_CONTROLLER
+#define REMOTEXY_BLE
 #include "SwitchMode.h"
 
 //--出力用定数--//
@@ -22,13 +22,13 @@ constexpr int DC_default_speed = 150; //             櫓用アームの回転速
 constexpr float leg_motor_gains[] = {1, 1, 1, 1}; // 足回りモーターの速度定数[最大のn倍]
 constexpr int SERVOMAX = 470, SERVOMIN = 120; //     PCA9685に渡す周波数のレンジ(基本変更しない)
 constexpr float arm_speed = 1;//1.25 //              アーム手首位置の移動速度[n*0.6cm(←目安)]
-constexpr int wrist_speed = 3; //                    アーム手首角度の回転速度[degree]
-constexpr int finger_speed = 6; //                   ハンドの回転速度[degree]
+constexpr int wrist_speed = 2; //                    アーム手首角度の回転速度[degree]
+constexpr int finger_speed = 3; //                   ハンドの回転速度[degree]
 constexpr int led_power = 150; //                    動作チェック用LEDの強さ
-
-constexpr float arm_pos_init[] = { 45.08/4,  80.88/4, 0.00}; // アーム待機位置x,yと手首角度[degree]
+// 45.08/4, 80.88/4
+constexpr float arm_pos_init[] = { 10,  10, 0.00}; // アーム待機位置x,yと手首角度[degree]
 constexpr float arm_pos_pick[] = {162.24/4, -85.44/4, 2.72}; // ワーク拾う位置x,yと手首角度[degree]
-constexpr float arm_pos_drop[] = {-206.56/4, 126.6/4, 2.54}; // ワークセット位置x,yと手首角度[degree]
+constexpr float arm_pos_drop[] = {147.24/4, 182.36/4, 2.54}; // ワークセット位置x,yと手首角度[degree]
 
 //--環境依存定数--//
 constexpr int DCpins[]={ // IBT_2用信号線のピン
@@ -51,11 +51,11 @@ int _direcX, _direcY; // 触るべからず
 Arm sakuarm(ArmLength, InitalAngle);
 
 void setup(){
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   //--init controller--//
-  PS4.begin(MAC_PS4CON);
-  //RemoteXY_Init();
+  //PS4.begin(MAC_PS4CON);
+  RemoteXY_Init();
   //Serial2.begin(115200,SERIAL_8N1, 16, 17);
 
   //--init DCmotors--//
@@ -65,7 +65,7 @@ void setup(){
   }
 
   //--init Arm--//
-  sakuarm.begin();//true
+  sakuarm.begin(1);//true
 
   //--init LED--//
   for(int pin: LEDpins){
@@ -76,8 +76,8 @@ void setup(){
 
 void loop(){
   //--get inputs--//
-  PS4Input();
-  //RemoteXYEngine.handler(); RemoteXYInput();
+  //PS4Input();
+  RemoteXYEngine.handler(); RemoteXYInput();
   //connection_flag = SerialInput();
 
   //--process logic--//
@@ -109,11 +109,13 @@ void loop(){
     else{
       _direcX = 0; _direcY = 0;
     } // →set direcX/Y
-    if(leg_button_shift){
+    /*if(leg_button_shift){
       leg_slow = !leg_slow;
       ledcWrite(LEDpins[2], leg_slow *led_power);
-      Serial.println(leg_slow);
-    }
+      //Serial.println(leg_slow);
+    }*/
+    leg_slow = leg_button_shift
+    ledcWrite(LEDpins[2], leg_slow *led_power);
     driveomuni(_direcX, _direcY, leg_button_R-leg_button_L, 255 *(leg_slow+0.5));
 
   //-manage yagura-//
@@ -144,15 +146,14 @@ void loop(){
     }
     sakuarm.rotateHand(wrist_speed*(arm_button_UP - arm_button_DOWN));
     sakuarm.moveFinger(finger_speed*(finger_button_UP - finger_button_DOWN));
-    sakuarm.updateServos();
+    //sakuarm.updateServos();
 
   }else{
     for(int pin: DCpins){
       ledcWrite(pin,0);
     }
-    //Serial.println("failed");
   }
-  /*------------------
+  //*------------------
   Serial.print(sakuarm.servoAngle[0]); Serial.print(",");
   Serial.print(sakuarm.servoAngle[1]); Serial.print(",");
   Serial.print(sakuarm.servoAngle[2]); Serial.print(",");
@@ -161,8 +162,8 @@ void loop(){
   //*///-----------------
   ledcWrite(LEDpins[0],connection_flag*led_power);
 
-  delay(10);
-  //RemoteXYEngine.delay(10);
+  //delay(10);
+  RemoteXYEngine.delay(10);
 }
 
 
