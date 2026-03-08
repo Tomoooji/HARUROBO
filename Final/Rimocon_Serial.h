@@ -2,22 +2,20 @@
 
 int inputvals[10];
 
-String line;
 
 bool SerialInput(){
   if(Serial.available()){
-    line = Serial.readStringUntil('\n');
+    String line = Serial.readStringUntil('\n');
     if(sscanf(line.c_str(),
         "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
-        &inputvals[0],&inputvals[1],&inputvals[2],&inputvals[3],&inputvals[4]],
-        &inputvals[5],&inputvals[6],&inputvals[7],&inputvals[8],&inputvals[9]
-        ) = 10){
+        &inputvals[0],&inputvals[1],&inputvals[2],&inputvals[3],&inputvals[4],
+        &inputvals[5],&inputvals[6],&inputvals[7],&inputvals[8],&inputvals[9]) == 10){
       leg_joystick_x = inputvals[0]*10;
       leg_joystick_y = inputvals[1]*10;
       leg_button_R = inputvals[2];
       leg_button_L = inputvals[3];
-      yagura_button_L = inputvals[4] > 0;
-      yagura_button_R = inputvals[4] < 0;
+      yagura_L = inputvals[4] > 0;
+      yagura_R = inputvals[4] < 0;
       arm_joystick_x = inputvals[5]*100;
       arm_joystick_y = inputvals[6]*100;
       arm_button_UP =    inputvals[7] > 0;
@@ -34,8 +32,8 @@ bool SerialInput(){
   leg_joystick_y = 0;
   leg_button_R = false;
   leg_button_L = false;
-  yagura_button_L = false;
-  yagura_button_R = false;
+  yagura_L = false;
+  yagura_R = false;
   arm_joystick_x = 0;
   arm_joystick_y = 0;
   arm_button_UP = false;

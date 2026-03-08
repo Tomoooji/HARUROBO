@@ -17,7 +17,7 @@ bool clow_button_UP, clow_button_DOWN; //     ワークを引きずるやつ
 bool appeal_button;
 
 //PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER
-#define REMOTEXY_BLE
+#define SERIAL_CONTROLLER
 #include "SwitchMode.h"
 
 //--出力用定数--//
@@ -59,7 +59,7 @@ void setup(){
 
   //--init controller--//
   //PS4.begin(MAC_PS4CON);
-  RemoteXY_Init();
+  //RemoteXY_Init();
   ////Serial2.begin(115200,SERIAL_8N1, 16, 17);
 
   //--init DCmotors--//
@@ -81,11 +81,11 @@ void setup(){
 void loop(){
   //--get inputs--//
   //PS4Input();
-  RemoteXYEngine.handler(); RemoteXYInput();
-  //connection_flag = SerialInput();
+  //RemoteXYEngine.handler(); RemoteXYInput();
+  connection_flag = SerialInput();
 
   //--process logic--//
-  if(disconnect_button && connection_flag) connection_flag = !connection_falg;
+  if(disconect_button && connection_flag) connection_flag = !connection_flag;
   if(appeal_button){
       for(int pin: DCpins){
       ledcWrite(pin,0);
@@ -93,13 +93,13 @@ void loop(){
     for(int pin:LEDpins){
       ledcWrite(pin, led_power);
     }
-    //dely(1500);
-    RemoteXYEngine.delay(1500);
+    delay(1500);
+    //RemoteXYEngine.delay(1500);
     for(int pin:LEDpins){
       ledcWrite(pin, 0);
     }
-    //dely(1500);
-    RemoteXYEngine.delay(1500);
+    delay(1500);
+    //RemoteXYEngine.delay(1500);
   }
   else if(connection_flag){
   //-manage omuni-//
@@ -155,7 +155,7 @@ void loop(){
       ledcWrite(pin,0);
     }
   }
-  //*------------------
+  /*------------------
   Serial.print(sakuarm.servoAngle[0]); Serial.print(",");
   Serial.print(sakuarm.servoAngle[1]); Serial.print(",");
   Serial.print(sakuarm.servoAngle[2]); Serial.print(",");
@@ -164,8 +164,8 @@ void loop(){
   //*///-----------------
   ledcWrite(LEDpins[0],connection_flag*led_power);
 
-  //delay(10);
-  RemoteXYEngine.delay(10);
+  delay(10);
+  //RemoteXYEngine.delay(10);
 }
 
 
