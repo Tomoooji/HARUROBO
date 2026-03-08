@@ -27,6 +27,8 @@
     arm_button_drop = !PS4.Square() &&PS4.Triangle();
     finger_button_UP = PS4.L1();
     finger_button_DOWN=PS4.R1();
+    clow_button_UP = PS4.Up();
+    clow_button_DOWN = PS4.Down();
   }
 
 #elif defined(REMOTEXY_BTCL) || defined(REMOTEXY_BLE)
@@ -54,6 +56,8 @@
     arm_button_drop = RemoteXY.selectorSwitch_01 == 3;
     finger_button_UP = RemoteXY.button_07;
     finger_button_DOWN=RemoteXY.button_08;
+    clow_button_UP = RemoteXY.button_10;
+    clow_button_DOWN = RemoteXY.button_11;
   }
 
 #elif defined(SERIAL_CONTROLLER)
