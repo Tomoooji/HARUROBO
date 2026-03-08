@@ -15,16 +15,16 @@
     leg_joystick_y = PS4.LStickY();
     leg_button_R = PS4.R2Value() > line_RL2pushed;
     leg_button_L = PS4.L2Value() > line_RL2pushed;
-    leg_button_shift = PS4.Down();
+    leg_button_shift = PS4.L3();
     yagura_L = PS4.Left();
     yagura_R = PS4.Right();
     arm_joystick_x = PS4.RStickX();
     arm_joystick_y = PS4.RStickY();
     arm_button_UP =PS4.Circle();
     arm_button_DOWN =PS4.Cross();
-    arm_button_init = PS4.Up();
-    arm_button_pick = PS4.Square();
-    arm_button_drop = PS4.Triangle();
+    arm_button_init = PS4.Square() && PS4.Triangle();
+    arm_button_pick = PS4.Square() && !PS4.Triangle();
+    arm_button_drop = !PS4.Square() &&PS4.Triangle();
     finger_button_UP = PS4.L1();
     finger_button_DOWN=PS4.R1();
   }
