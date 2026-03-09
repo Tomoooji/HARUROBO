@@ -11,7 +11,7 @@
 
   inline void PS4Input(){
     connection_flag = PS4.isConnected();
-    disconnection_button = PS4.Touchpad();//
+    disconnect_button = PS4.Touchpad();//
     appeal_button = PS4.Share() && PS4.Options();
     leg_joystick_x = PS4.LStickX();
     leg_joystick_y = PS4.LStickY();

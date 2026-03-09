@@ -1,6 +1,6 @@
 //--入力用変数--//
 bool connection_flag; //                      接続確認用
-bool disconect_button; //                     PS4用の接続切断ボタン
+bool disconnect_button; //                     PS4用の接続切断ボタン
 int leg_joystick_x, leg_joystick_y; //        足回り方向指定
 int leg_direc; //                             足回り方向指定(ジョイスティック以外のUI用)
 bool leg_button_R, leg_button_L; //           旋回方向
@@ -31,7 +31,7 @@ constexpr int clow_speed = 3; //                     ワーク引きずる爪の
 constexpr int led_power = 150; //                    動作チェック用LEDの強さ
 // 45.08/4, 80.88/4
 constexpr float arm_pos_init[] = { 10,  10, PI}; // アーム待機位置x,yと手首角度[radian]
-constexpr float arm_pos_pick[] = {162.24/4, -85.44/4, 2.72}; // ワーク拾う位置x,yと手首角度[radian]
+constexpr float arm_pos_pick[] = {162.24/4, -86.44/4, 2.72}; // ワーク拾う位置x,yと手首角度[radian]
 constexpr float arm_pos_drop[] = {147.24/4, 182.36/4, 0.5}; // ワークセット位置x,yと手首角度[radian]
 
 //--環境依存定数--//
@@ -69,7 +69,7 @@ void setup(){
   }
 
   //--init Arm--//
-  sakuarm.begin(1);//true
+  sakuarm.begin();//true
 
   //--init LED--//
   for(int pin: LEDpins){
@@ -85,7 +85,7 @@ void loop(){
   //connection_flag = SerialInput();
 
   //--process logic--//
-  if(disconect_button && connection_flag) connection_flag = !connection_flag;
+  if(disconnect_button && connection_flag) connection_flag = !connection_flag;
   if(appeal_button){
       for(int pin: DCpins){
       ledcWrite(pin,0);
