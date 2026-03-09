@@ -112,6 +112,18 @@ void loop(){
 
 
 /*
+constexpr int centerx = 512, centery = 512;
+constexpr int limit = 50;
+constexpr float range_othogonal = radians(25);
+float inputAngle;
+uint8_t digitalpin[] = {// 16pinいる
+  15, 2, 0, 4, 5, 18, 19, 23, //16, 17, 21, 22   8pin
+  13, 12, 14, 27, 26, 25, 34, 35//33, 32         8pin
+};
+uint8_t analogpin[] = {
+  33, 32
+};
+bool digitals[];
 
   for(uint8_t pin: digitalpin){
     Serial2.print(!digitalRead(pin));

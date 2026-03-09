@@ -17,7 +17,7 @@ bool clow_button_UP, clow_button_DOWN; //     ワークを引きずるやつ
 bool appeal_button; //                        本丸攻略後のアピールボタン(全LEDがチカチカします。)
 
 //PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER
-#define PS4_CONTROLLER
+#define SERIAL_CONTROLLER
 #include "SwitchMode.h"
 
 //--出力用定数--//
@@ -55,10 +55,10 @@ int _direcX, _direcY; // 触るべからず
 Arm sakuarm(ArmLength, InitalAngle);
 
 void setup(){
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   //--init controller--//
-  PS4.begin(MAC_PS4CON);
+  //PS4.begin(MAC_PS4CON);
   //RemoteXY_Init();
   ////Serial2.begin(115200,SERIAL_8N1, 16, 17);
 
@@ -69,7 +69,7 @@ void setup(){
   }
 
   //--init Arm--//
-  sakuarm.begin();//true
+  sakuarm.begin(1);//true
 
   //--init LED--//
   for(int pin: LEDpins){
@@ -80,9 +80,9 @@ void setup(){
 
 void loop(){
   //--get inputs--//
-  PS4Input();
+  //PS4Input();
   //RemoteXYEngine.handler(); RemoteXYInput();
-  //connection_flag = SerialInput();
+  connection_flag = SerialInput();
 
   //--process logic--//
   if(disconect_button && connection_flag) connection_flag = !connection_flag;

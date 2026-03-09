@@ -10,8 +10,8 @@ bool SerialInput(){
         "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
         &inputvals[0],&inputvals[1],&inputvals[2],&inputvals[3],&inputvals[4],
         &inputvals[5],&inputvals[6],&inputvals[7],&inputvals[8],&inputvals[9]) == 10){
-      leg_joystick_x = inputvals[0]*10;
-      leg_joystick_y = inputvals[1]*10;
+      leg_joystick_x = inputvals[0]*100;
+      leg_joystick_y = inputvals[1]*100;
       leg_button_R = inputvals[2];
       leg_button_L = inputvals[3];
       yagura_L = inputvals[4] > 0;
