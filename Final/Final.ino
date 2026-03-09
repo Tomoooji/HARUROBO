@@ -17,7 +17,7 @@ bool clow_button_UP, clow_button_DOWN; //     ワークを引きずるやつ
 bool appeal_button; //                        本丸攻略後のアピールボタン(全LEDがチカチカします。)
 
 //PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER
-#define SERIAL_CONTROLLER
+#define PS4_CONTROLLER
 #include "SwitchMode.h"
 
 //--出力用定数--//
@@ -40,7 +40,7 @@ constexpr int DCpins[]={ // IBT_2用信号線のピン
    2, 15, 14, 12, 26, 27, 18,  5, 25, 33
 };
 constexpr int Channels[] = { // PCA9685の使用チャンネル(根本→手先順)
-  0, 2, 4, 6, 8
+  0, 2, 4, 6, 8, 10
 };
 constexpr int ArmLength[] = {36, 26, 21}; // アーム関節長さ(3個目は不使用)
 constexpr int InitalAngle[] = {0, 0, 90}; // アームのサーボ取付角度(完全折り畳み時が0°)
@@ -58,7 +58,7 @@ void setup(){
   Serial.begin(115200);
 
   //--init controller--//
-  //PS4.begin(MAC_PS4CON);
+  PS4.begin(MAC_PS4CON);
   //RemoteXY_Init();
   ////Serial2.begin(115200,SERIAL_8N1, 16, 17);
 
@@ -80,9 +80,9 @@ void setup(){
 
 void loop(){
   //--get inputs--//
-  //PS4Input();
+  PS4Input();
   //RemoteXYEngine.handler(); RemoteXYInput();
-  connection_flag = SerialInput();
+  //connection_flag = SerialInput();
 
   //--process logic--//
   if(disconect_button && connection_flag) connection_flag = !connection_flag;

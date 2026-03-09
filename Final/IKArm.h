@@ -108,7 +108,8 @@ class Arm{
       this->pwm.setPWM(Channels[1],0,map(180-constrain(this->servoAngle[1], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
       this->pwm.setPWM(Channels[2],0,map(180-constrain(this->servoAngle[2], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
       this->pwm.setPWM(Channels[3],0,map(constrain(this->servoAngle[3], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
-      this->pwm.setPWM(Channels[4],0,map(constrain(this->servoAngle[4], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
+      this->pwm.setPWM(Channels[4],0,map(180-constrain(this->servoAngle[3], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
+      this->pwm.setPWM(Channels[5],0,map(constrain(this->servoAngle[4], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
     //}
   }
 
