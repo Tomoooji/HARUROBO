@@ -16,46 +16,46 @@ inline void setdirection(float inputAngle, int& direcX, int& direcY){
   if(inputAngle > PI -range_othogonal || inputAngle < -PI +range_othogonal){
     // LEFT
     direcX = -1; direcY = 0;
-    //Serial.println("L");
+    Serial.println("L");
   }
   else if(inputAngle <= -0.5*PI -range_othogonal){
     // BACKLEFT
     direcX =-1; direcY =-1;
-    //Serial.println("BL");
+    Serial.println("BL");
   }
   else if(inputAngle < -0.5*PI +range_othogonal){
     // BACK
     direcX = 0; direcY =-1;
-    //Serial.println("B");
+    Serial.println("B");
   }
   else if(inputAngle <= 0 -range_othogonal){
     // BACKRIGHT
     direcX = 1; direcY =-1;
-    //Serial.println("BR");
+    Serial.println("BR");
   }
   else if(inputAngle < 0 +range_othogonal){
     // RIGHT
     direcX = 1; direcY = 0;
-    //Serial.println("R");
+    Serial.println("R");
   }
   else if(inputAngle <= 0.5*PI -range_othogonal){
     // FRONTRIGHT
     direcX = 1; direcY = 1;
-    //Serial.println("FR");
+    Serial.println("FR");
   }
   else if(inputAngle < 0.5*PI +range_othogonal){
     // FRONT
     direcX = 0; direcY = 1;
-    //Serial.println("F");
+    Serial.println("F");
   }
   else if(inputAngle <= PI -range_othogonal){
     // FRONTLEFT
     direcX =-1; direcY = 1;
-    //Serial.println("FL");
+    Serial.println("FL");
   }
   else{
     direcX = 0; direcY = 0;
-    //Serial.println("N");
+    Serial.println("N");
   }
 }
 

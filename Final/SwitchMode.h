@@ -4,8 +4,8 @@
 #if defined(PS4_CONTROLLER)
   #include <PS4Controller.h>
   constexpr char MAC_PS4CON[] = "e4:65:b8:d8:d4:80";
-  constexpr float range_othogonal = radians(25); // 前後左右に±50°,斜めは±40°
-  constexpr int range_ignoreLstick = 40;
+  constexpr float range_othogonal = radians(40); // 前後左右に±50°,斜めは±40°
+  constexpr int range_ignoreLstick = 50;
   constexpr int line_RL2pushed = 75;
   constexpr int range_ignoreRstick = 20;
 
@@ -27,8 +27,8 @@
     arm_button_init = PS4.Square() && PS4.Triangle();
     arm_button_pick = PS4.Square() && !PS4.Triangle();
     arm_button_drop = !PS4.Square() &&PS4.Triangle();
-    finger_button_UP = PS4.R1();
-    finger_button_DOWN=PS4.L1();
+    finger_button_UP = PS4.R1();////
+    finger_button_DOWN=PS4.L1();////
     clow_button_UP = PS4.Up();
     clow_button_DOWN = PS4.Down();
   }
