@@ -41,6 +41,10 @@ inline void calcAngle(IK2& ik){
   ),-1.0f,1.0f)));
 }
 
+inline void getWrist(IK2& ik, float* _result){}
+
+inline void ajastAngle(IK2& ik, int idx, float da){}
+
 inline void InitIK(IK2& ik){
   setWrist(ik);
   calcAngle(ik);
@@ -68,7 +72,6 @@ class Arm{
     for(int i=0; i<3; i++){
       this->servoAngle[i] = degrees(clip2pi(this->Ik.jointAngle[i] - this->initAngle[i]));
     }
-
   }
   
   bool moveWrist(float dx, float dy){
@@ -82,11 +85,11 @@ class Arm{
     return isWristOK(this->Ik);
   }
   
-  void rotateHand(int da){// wrist_speed*(arm_button_UP - arm_button_DOWN)
+  void rotateHand(int da){
     this->servoAngle[2] = constrain(this->servoAngle[2] +da, 0, 180);
   }
   
-  void moveFinger(int da){// hand_speed*(hand_button_UP - hand_button_DOWN)
+  void moveFinger(int da){
     this->servoAngle[3] = constrain(this->servoAngle[3] +da, finger_min, finger_max);
   }
   void moveClow(int da){
@@ -94,14 +97,13 @@ class Arm{
   }
   
   void updateServos(){
-    //for(int i=0; i<4; i++){
-      this->pwm.setPWM(Channels[0],0,map(180-constrain(this->servoAngle[0], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
-      this->pwm.setPWM(Channels[1],0,map(180-constrain(this->servoAngle[1], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
-      this->pwm.setPWM(Channels[2],0,map(180-constrain(this->servoAngle[2], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
-      this->pwm.setPWM(Channels[3],0,map(constrain(this->servoAngle[3], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
-      this->pwm.setPWM(Channels[4],0,map(180-constrain(this->servoAngle[3], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
-      this->pwm.setPWM(Channels[5],0,map(constrain(this->servoAngle[4], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
-    //}
+    // don't use for to ajast set direction
+    this->pwm.setPWM(Channels[0],0,map(180-constrain(this->servoAngle[0], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
+    this->pwm.setPWM(Channels[1],0,map(180-constrain(this->servoAngle[1], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
+    this->pwm.setPWM(Channels[2],0,map(180-constrain(this->servoAngle[2], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
+    this->pwm.setPWM(Channels[3],0,map(constrain(this->servoAngle[3], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
+    this->pwm.setPWM(Channels[4],0,map(180-constrain(this->servoAngle[3], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
+    this->pwm.setPWM(Channels[5],0,map(constrain(this->servoAngle[4], 0, 180), 0, 180, SERVOMIN, SERVOMAX));
   }
 
 };
