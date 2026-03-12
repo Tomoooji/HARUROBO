@@ -49,15 +49,6 @@ inline void InitIK(IK2& ik){
 inline bool isWristOK(IK2& ik){return ik.distance > ik.jointLength[0] + ik.jointLength[1] || ik.distance < ik.jointLength[0] - ik.jointLength[1];}
 
 ////////////////////////////////////////////////////////
-/*
-#define SERVOMIN 120
-#define SERVOMAX 470
-
-constexpr float arm_speed = 1;//1.25;
-constexpr float wrist_speed = degrees(0.05); // radians
-constexpr int hand_speed = 6; // degrees
-constexpr int hand_min = 40, hand_max = 140; // degrees
-*/
 
 class Arm{
  public:
