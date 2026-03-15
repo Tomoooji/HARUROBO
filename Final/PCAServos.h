@@ -22,9 +22,9 @@ constexpr int limit_min[] = {0,0,0,40};
 constexpr int rotate_speed[] = {3,3,3,6};
 constexpr float arm_speed = 0.01;
 
-constexpr float arm_pos_init[] = {10,  10, PI};
-constexpr float arm_pos_pick[] = {162.24/4, -89.44/4, radians(135)};
-constexpr float arm_pos_drop[] = {147.24/4, 152.36/4, 0.5};// 45.08/4, 80.88/4
+constexpr float arm_pos_init[] = {10,  10, 0};
+constexpr float arm_pos_pick[] = {162.24/4, -89.44/4, 135};
+constexpr float arm_pos_drop[] = {147.24/4, 152.36/4, 30};// 45.08/4, 80.88/4
 
 inline float clip2pi(float ang){
   return (ang<0? ang+TWO_PI: (ang>TWO_PI? ang-TWO_PI: ang));

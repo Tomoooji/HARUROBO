@@ -1,11 +1,17 @@
 #pragma once
 #include <Arduino.h>
 
+inline int sign(auto x){return (x>0)-(x<0);}
+
+inline bool isStickmoved(int xval, int yval, int range){
+  return sq(xval)+sq(yval) > sq(range);
+}
+
 #if defined(PS4_CONTROLLER)
   #include <PS4Controller.h>
   constexpr char MAC_PS4CON[] = "40:99:22:27:b5:e8";
   //constexpr float range_othogonal = radians(40); // 前後左右に±50°,斜めは±40°
-  constexpr int range_ignoreLstick = 50;
+  constexpr int range_ignoreLstick = 20;
   constexpr int line_RL2pushed = 75;
   constexpr int range_ignoreRstick = 20;
 
@@ -17,20 +23,25 @@
     leg_joystick_y = PS4.LStickY();
     leg_button_R = PS4.R2Value() > line_RL2pushed;
     leg_button_L = PS4.L2Value() > line_RL2pushed;
-    leg_button_shift = PS4.Share() && !PS4.Options();/////////////
+    leg_button_shift = isStickmoved(PS4.LStickX(),PS4.LStickY(),70);
     yagura_L = PS4.Left();
     yagura_R = PS4.Right();
     arm_joystick_x = -PS4.RStickX();
     arm_joystick_y = PS4.RStickY();
-    arm_button_UP =PS4.Circle();
-    arm_button_DOWN =PS4.Cross();
-    arm_button_init = PS4.Square() && PS4.Triangle();
-    arm_button_pick = PS4.Square() && !PS4.Triangle();
-    arm_button_drop = !PS4.Square() &&PS4.Triangle();
-    finger_button_UP = PS4.R1();////
-    finger_button_DOWN=PS4.L1();////
-    clow_button_UP = PS4.Up();
-    clow_button_DOWN = PS4.Down();
+    arm_button_UP = PS4.R1();
+    arm_button_DOWN=PS4.L1();
+    arm_button_init = PS4.Circle() && PS4.Up();
+    arm_button_pick = PS4.Cross() && !PS4.Up() && !PS4.Down();
+    arm_button_drop = PS4.Circle();
+    finger_button_UP = PS4.Triangle();////
+    finger_button_DOWN=PS4.Square();////
+    //clow_button_UP = PS4.Up();
+    //clow_button_DOWN = PS4.Down();
+    shoulder_button_UP = PS4.Circle() && PS4.Down() && !PS4.Up();
+    shoulder_button_DOWN=PS4.Cross() && PS4.Down() && !PS4.Up();
+    elbow_button_UP = PS4.Triangle() && PS4.Down() && !PS4.Up();
+    elbow_button_DOWN=PS4.Square() && PS4.Down() && !PS4.Up();
+
   }
 
 #elif defined(REMOTEXY_BTCL) || defined(REMOTEXY_BLE)
@@ -70,9 +81,3 @@
   constexpr int range_ignoreLstick = 0;
 
 #endif
-
-inline int sign(auto x){return (x>0)-(x<0);}
-
-inline bool isStickmoved(int xval, int yval, int range){
-  return sq(xval)+sq(yval) > sq(range);
-}
