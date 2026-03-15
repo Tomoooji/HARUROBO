@@ -5,7 +5,7 @@ IK2::IK2(const int jointLen[]): jointLength(jointLen){
   this->jointLength_sq[1] = sq(this->jointLength[1]);
 }
 
-void IK2::calcWrist(){
+void IK2::calcWrist(){ //calc position from angle (FK)
   float x = 0, y = 0, ang = 0;
   for(int i=0; i<2; i++){
     ang += i-PI;
@@ -17,13 +17,13 @@ void IK2::calcWrist(){
   this->setWrist(x, y);
 }
 
-bool IK2::setWrist(float x, float y){
+bool IK2::setWrist(float x, float y){ //update position
   this->position[1][0] = x;
   this->position[1][1] = y;
   return this->isWristOK();
 }
 
-void IK2::calcAngle(){
+void IK2::calcAngle(){ //calc jointAngle from position (IK)
   this->distance_sq = sq(this->position[1][0]) + sq(this->position[1][1]); this->distance = sqrt(this->distance_sq);
   this->jointAngle[0] = clip2pi(acos(constrain((
     (this->distance_sq +this->jointLength_sq[0] -this->jointLength_sq[1]) / (2 *this->distance *this->jointLength[0])
@@ -56,9 +56,7 @@ void ServoMotors::begin(){
 void ServoMotors::setPosition(const float* command){
   this->Ik.setWrist(command[0], command[1]);
   this->angle[SRV_WRIST] = command[2];
-  //this->Ik.calcAngle();
-  //this->angle[SRV_SHOULDER] = degrees(this->Ik.jointAngle[SRV_SHOULDER]);
-  //this->angle[SRV_ELBOW] = degrees(this->Ik.jointAngle[SRV_ELOBOW]);
+  //this->_updateIk();
 }
 
 void ServoMotors::rotate (int idx, int direc){
@@ -73,15 +71,23 @@ void ServoMotors::rotate (int idx, int direc){
     //case SRV_ELBOW:
       //this->Ik.jointAngle[idx] += radians(da);
       //this->Ik.calcWrist();
+      //break;
     //case SRV_WRIST:
     //case SRV_FINGER:
       //this->angle[idx] = constrain(this->angle[idx] +(direc*rotate_speed[idx]), limit_min[idx], limit_max[idx]);
+      //break;
+    //case default:
+      //return;
 }
 
 void ServoMotors::moveWrist(int dx, int dy){
   if(!this->Ik.setWrist(this->Ik.position[1][0] +dx, this->Ik.position[1][1] +dy)){
     this->Ik.setWrist(this->Ik.position[1][0] -dx, this->Ik.position[1][1] -dy);
   }
+  this->_updateIk();
+}
+
+void ServoMotors::_updateIk(){ //update angle from position
   this->Ik.calcAngle();
   this->angle[SRV_SHOULDER] = degrees(this->Ik.jointAngle[SRV_SHOULDER]);
   this->angle[SRV_ELBOW] = degrees(this->Ik.jointAngle[SRV_ELBOW]);
