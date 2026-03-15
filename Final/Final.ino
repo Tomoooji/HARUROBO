@@ -82,8 +82,10 @@ void loop(){
   else if(connection_flag){
 
   //-manage omuni-//
-    if(sq(leg_joystick_x) + sq(leg_joystick_y) > sq(range_ignoreLstick)){
-      calcOmuni_d(DCs.speed, leg_joystick_x, leg_joystick_y, (leg_button_R - leg_button_L), SPEED_FAST, SPEED_TURN);
+    if(isStickmoved(leg_joystick_x, leg_joystick_y, range_ignoreLstick)){
+      calcOmuni_accel(DCs, leg_joystick_x , leg_joystick_y, (leg_button_R - leg_button_L), SPEED_FAST, SPEED_TURN);
+    }else{
+      calcOmuni_accel(DCs, 0, 0, (leg_button_R - leg_button_L), SPEED_FAST, SPEED_TURN);
     }
     DCs.speed[MTR_YAGURA] = SPEED_YAGURA * (yagura_R - yagura_L);
     DCs.driveAll();
@@ -99,7 +101,7 @@ void loop(){
     if(arm_button_drop){
       Arm.setPosition(arm_pos_drop);
     }
-    if(sq(arm_joystick_x) + sq(arm_joystick_y) > sq(range_ignoreRstick+10)){
+    if(isStickmoved(arm_joystick_x, arm_joystick_y, range_ignoreRstick)){
       Arm.moveWrist(arm_speed *arm_joystick_x, arm_speed *arm_joystick_y);    
     }
 
@@ -118,10 +120,10 @@ void loop(){
     DCs.quit();
   }
   /*------------------
-  Serial.print(sakuarm.servoAngle[0]); Serial.print(",");
-  Serial.print(sakuarm.servoAngle[1]); Serial.print(",");
-  Serial.print(sakuarm.servoAngle[2]); Serial.print(",");
-  Serial.print(sakuarm.servoAngle[3]); Serial.println();//Serial.print(",");
+  Serial.print(Arm.angle[0]); Serial.print(",");
+  Serial.print(Arm.angle[1]); Serial.print(",");
+  Serial.print(Arm.angle[2]); Serial.print(",");
+  Serial.print(Arm.angle[3]); Serial.println();//Serial.print(",");
   //Serial.print(sakuarm.Ik.wrist[0]); Serial.print(",");
   //Serial.println(sakuarm.Ik.wrist[1]);
   //*///-----------------

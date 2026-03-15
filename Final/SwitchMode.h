@@ -72,3 +72,7 @@
 #endif
 
 inline int sign(auto x){return (x>0)-(x<0);}
+
+inline bool isStickmoved(int xval, int yval, int range){
+  return sq(xval)+sq(yval) > sq(range);
+}
