@@ -68,6 +68,13 @@ void ServoMotors::rotate (int idx, int direc){
     this->Ik.jointAngle[idx] = radians(this->angle[idx]);
     this->Ik.calcWrist();
   }
+  //switch(idx){
+    //case SRV_SHOULDER:
+    //case SRV_ELBOW:
+      //this->Ik.jointAngle[idx] += radians(da);
+    //case SRV_WRIST:
+    //case SRV_FINGER:
+      //this->angle[idx] = constrain(this->angle[idx] +(direc*rotate_speed[idx]), limit_min[idx], limit_max[idx]);
 }
 
 void ServoMotors::moveWrist(int dx, int dy){
