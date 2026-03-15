@@ -1,64 +1,78 @@
-//constexpr int DC_default_speed = 150; //             櫓用アームの回転速度(足回りは255)[n/255]
-//constexpr int leg_speed_high = 200; //             櫓用アームの回転速度(足回りは255)[n/255]
-//constexpr int leg_speed_low = 85; //             櫓用アームの回転速度(足回りは255)[n/255]
+#pragma once
+#include <Arduino.h>
+
+//(extern) constexpr int DCpins[];
+constexpr int DCpins[]={
+//  FR      BR      BL      FL    yagura 
+   2, 15, 12, 14, 26, 27, 18,  5, 25, 33
+};
+
+enum MOTORID{
+  MTR_FRONTRIGHT, MTR_BACKRIGHT, MTR_BACKLEFT, MTR_FRONTLEFT, MTR_YAGURA
+};
+
 enum SPEED_OPTIONS{
-  SLOW = 85,
-  MIDDLE = 100,
-  HIGH = 200,
-  YAGURA = 100
+  SPEED_SLOW = 85,
+  SPEED_MIDD = 100,
+  SPEED_FAST = 200,
+  SPEED_TURN = 50,
+  SPEED_YAGURA = 100
 };
 constexpr float leg_motor_gains[] = {1, 1, 1, 1}; // 足回りモーターの速度定数[最大のn倍]
 extern constexpr int leg_accel = 5;
 
+inline int _sign(auto x){return (x>0)-(x<0);}
 
-
-enum MOTORID{
-  FRONTRIGHT, //0
-  BACKRIGHT,  //1
-  BACKLEFT,   //2
-  FRONTLEFT,  //3
-  YAGURAARM   //4
-};
-
-struct DCmotor{
+class DCmotors{ // functional class for controlling DC motors
  public:
-  const int NUM;
-  int leg_direc1, leg_direc2;
-  int speed[NUM];
+  int NUM = 5;
+  int speed[5];
+  DCmotors(){}
 
-  void begin(){
+  void begin(){ // attach pins and set 0 speed
     for(int pin:DCpins){
-      ledcAttach(pin);
+      ledcAttach(pin, 12800, 8);
     }
     driveAll();
   }
 
-  void driveAll(){
+  void quit(){ // turn off all motors
+    for(int id=0; id<NUM; id++){
+      this->speed[id] = 0;
+    }
+    this->driveAll();
+  }
+
+  void driveAll(){ // drive all motors by its power
     for(int idx=0; idx<5; idx++){
       ledcWrite(DCpins[idx*2], (this->speed[idx]>0? constrain(speed[idx], 0, 255): 0));
       ledcWrite(DCpins[idx*2+1], (this->speed[idx]<0? constrain(-speed[idx], 0, 255): 0));
     }
   }
 
-  bool addAccel(int idx, int target){
-    speed[idx] = target-speed[idx]>leg_accel? speed[idx] + leg_accel: target;
-    return speed[idx] == target;
+  bool addAccel(int idx, int target){ // increase speed depends on accel gain
+    this->speed[idx] = abs(target-speed[idx])>leg_accel ? speed[idx]+leg_accel : target;
+    return this->speed[idx] == target;
   }
 };
 
-inline void setDirection()
+constexpr float range_othogonal = radians(30);
+inline void calcOmuni_d(int* result, int valueX, int valueY, int turn, int speed_l, int speed_r){
+  // only set 8direction +stop to leg motors (not drive here)
+  float angle = atan2(valueY, valueX);
+  int direcX = (cos(angle)>cos(range_othogonal)) - (cos(angle)>-cos(range_othogonal));
+  int direcY = (sin(angle)>sin(range_othogonal)) - (sin(angle)>-sin(range_othogonal));
+  result[MTR_FRONTRIGHT] = (speed_l*_sign(direcY -direcX)) -(speed_r*turn) *leg_motor_gains[MTR_FRONTRIGHT];
+  result[MTR_BACKRIGHT]  = (speed_l*_sign(direcY +direcX)) -(speed_r*turn) *leg_motor_gains[MTR_BACKRIGHT];
+  result[MTR_BACKLEFT]   = (speed_l*_sign(direcY -direcX)) +(speed_r*turn) *leg_motor_gains[MTR_BACKLEFT];
+  result[MTR_FRONTLEFT]  = (speed_l*_sign(direcY +direcX)) +(speed_r*turn) *leg_motor_gains[MTR_FRONTLEFT];
+}
 
-inline void calcOmuni(DCmotor& leg, int direcX, int direcY, int turn, int speed_l, int speed_r, bool useaccel = false){
-  if(!useaccel){
-    leg.speed[DCmotor::FRONTRIGHT] = (speed_l*sign(direcY -direcX)) - (speed_r*turn) *leg_motor_gains[DCmotor::FRONTRIGHT]
-    leg.speed[DCmotor::BACKRIGHT]  = (speed_l*sign(direcY +direcX)) - (speed_r*turn) *leg_motor_gains[DCmotor::BACKRIGHT]
-    leg.speed[DCmotor::BACKLEFT]   = (speed_l*sign(direcY -direcX)) + (speed_r*turn) *leg_motor_gains[DCmotor::BACKLEFT]
-    leg.speed[DCmotor::FRONTLEFT]  = (speed_l*sign(direcY +direcX)) + (speed_r*turn) *leg_motor_gains[DCmotor::FRONTLEFT]
-  }
-  else{
-    addAccel(leg.speed[DCmotor::FRONTRIGHT],(speed_l*sign(direcY -direcX)) - (speed_r*turn) *leg_motor_gains[DCmotor::FRONTRIGHT]);
-    addAccel(leg.speed[DCmotor::BACKRIGHT], (speed_l*sign(direcY +direcX)) - (speed_r*turn) *leg_motor_gains[DCmotor::BACKRIGHT]);
-    addAccel(leg.speed[DCmotor::BACKLEFT] , (speed_l*sign(direcY -direcX)) + (speed_r*turn) *leg_motor_gains[DCmotor::BACKLEFT]);
-    addAccel(leg.speed[DCmotor::FRONTLEFT], (speed_l*sign(direcY +direcX)) + (speed_r*turn) *leg_motor_gains[DCmotor::FRONTLEFT]);
-  }
+inline void calcOmuni_a(int* result, int valueX, int valueY, int turn, int speed_l, int speed_r){
+  // set all angles from input to leg motors (not drive here)
+  float angle = atan2(valueY, valueX);
+  result[MTR_FRONTRIGHT] = (speed_l*cos(angle+(PI/4))) -(speed_r*turn) *leg_motor_gains[MTR_FRONTRIGHT];
+  result[MTR_BACKRIGHT]  = (speed_l*sin(angle+(PI/4))) -(speed_r*turn) *leg_motor_gains[MTR_BACKRIGHT];
+  result[MTR_BACKLEFT]   = (speed_l*cos(angle+(PI/4))) +(speed_r*turn) *leg_motor_gains[MTR_BACKLEFT];
+  result[MTR_FRONTLEFT]  = (speed_l*sin(angle+(PI/4))) +(speed_r*turn) *leg_motor_gains[MTR_FRONTLEFT];
 }

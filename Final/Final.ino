@@ -1,47 +1,40 @@
 //--入力用変数--//
-bool connection_flag; //                      接続確認用
-bool disconnect_button; //                     PS4用の接続切断ボタン
-int leg_joystick_x, leg_joystick_y; //        足回り方向指定
-int leg_direc; //                             足回り方向指定(ジョイスティック以外のUI用)
-bool leg_button_R, leg_button_L; //           旋回方向
-bool leg_button_shift; //                     低速走行
-bool yagura_R, yagura_L; //                   櫓用アーム開閉
-int arm_joystick_x, arm_joystick_y; //        アーム手首位置操作
-bool arm_zplus, arm_zminus, arm_yplus, arm_yminus;
-  //                                          アーム手首位置操作(ジョイスティック以外のUI用)
-bool arm_button_UP, arm_button_DOWN; //       アーム手首角度調節
+bool connection_flag;
+bool disconnect_button;
+int leg_joystick_x, leg_joystick_y;
+//int leg_direc;
+bool leg_button_R, leg_button_L;
+bool leg_button_shift;///////
+bool yagura_R, yagura_L;
+int arm_joystick_x, arm_joystick_y;
+//bool arm_zplus, arm_zminus, arm_yplus, arm_yminus;
+bool arm_button_UP, arm_button_DOWN;
 bool arm_button_init, arm_button_pick, arm_button_drop;
-  //                                          アームの指定位置コマンド
-bool finger_button_UP, finger_button_DOWN; // ハンドの開閉
-bool clow_button_UP, clow_button_DOWN; //     ワークを引きずるやつ
-bool appeal_button; //                        本丸攻略後のアピールボタン(全LEDがチカチカします。)
+bool finger_button_UP, finger_button_DOWN;
+bool clow_button_UP, clow_button_DOWN;
+bool appeal_button;
+
+bool shoulder_button_UP, shoulder_button_DOWN;
+bool elbow_button_UP, elbow_button_DOWN;
 
 //PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER
 #define PS4_CONTROLLER
 #include "SwitchMode.h"
 
 //--出力用定数--//
+constexpr int led_power = 150;
 
-constexpr int led_power = 150; //                    動作チェック用LEDの強さ
-// 45.08/4, 80.88/4
 
 //--環境依存定数--//
-constexpr int DCpins[]={ // IBT_2用信号線のピン
-//  FR      BR      BL      FL    yagura 
-   2, 15, 12, 14, 26, 27, 18,  5, 25, 33
-};
-constexpr int Channels[] = { // PCA9685の使用チャンネル(根本→手先順)
-  0, 2, 4, 6, 8, 10
-};
-constexpr int LEDpins[]={32, 4, 0}; //       動作チェック用LEDのピン(接続,アーム閾値,低速走行)
+constexpr int LEDpins[]={32, 4, 0};
 
 //--出力用変数--//
-#include "OmuniLeg.h"
-#include "IKArm.h"
+#include "DCmotors.h"
+#include "PCAServos.h"
 
-bool leg_slow = true;
-int _direcX, _direcY; // 触るべからず
-Arm sakuarm(ArmLength, InitalAngle);
+//Arm sakuarm(ArmLength, InitalAngle);
+ServoMotors Arm = ServoMotors(false);
+DCmotors DCs;
 
 void setup(){
   Serial.begin(9600);
@@ -52,13 +45,9 @@ void setup(){
   ////Serial2.begin(115200,SERIAL_8N1, 16, 17);
 
   //--init DCmotors--//
-  for(int pin: DCpins){
-    ledcAttach(pin,12800,8);
-    ledcWrite(pin,0);
-  }
-
+  DCs.begin();
   //--init Arm--//
-  sakuarm.begin();//true
+  Arm.begin();
 
   //--init LED--//
   for(int pin: LEDpins){
@@ -91,56 +80,42 @@ void loop(){
     //RemoteXYEngine.delay(400);
   }
   else if(connection_flag){
+
   //-manage omuni-//
     if(sq(leg_joystick_x) + sq(leg_joystick_y) > sq(range_ignoreLstick)){
-      setdirection(atan2(leg_joystick_y, leg_joystick_x), _direcX, _direcY);
+      calcOmuni_d(DCs.speed, leg_joystick_x, leg_joystick_y, (leg_button_R - leg_button_L), SPEED_FAST, SPEED_TURN);
     }
-    else{
-      _direcX = 0; _direcY = 0;
-    } // →set direcX/Y
-
-    if(leg_button_shift)leg_slow = !leg_slow;
-    //lge_slow = leg_button_shift; // || leg_button_R || leg_button_L;
-
-    // shift speed
-    ledcWrite(LEDpins[2], leg_slow *led_power);
-    driveomuni(_direcX, _direcY, leg_button_R-leg_button_L, (leg_slow? leg_speed_low: leg_speed_high));
-
-  //-manage yagura-//
-    drivemotor(YAGURAARM, DC_default_speed *(yagura_L - yagura_R));
+    DCs.speed[MTR_YAGURA] = SPEED_YAGURA * (yagura_R - yagura_L);
+    DCs.driveAll();
+  //*/
 
   //-manage ikarm-//
     if(arm_button_init){
-      setWrist(sakuarm.Ik, arm_pos_init[0], arm_pos_init[1]);
-      sakuarm.servoAngle[2] = degrees(arm_pos_init[2]);
+      Arm.setPosition(arm_pos_init);
     }
     if(arm_button_pick){
-      setWrist(sakuarm.Ik, arm_pos_pick[0], arm_pos_pick[1]);
-      sakuarm.servoAngle[2] = degrees(arm_pos_pick[2]);
+      Arm.setPosition(arm_pos_pick);
     }
     if(arm_button_drop){
-      setWrist(sakuarm.Ik, arm_pos_drop[0], arm_pos_drop[1]);
-      sakuarm.servoAngle[2] = degrees(arm_pos_drop[2]);
+      Arm.setPosition(arm_pos_drop);
     }
     if(sq(arm_joystick_x) + sq(arm_joystick_y) > sq(range_ignoreRstick+10)){
-      if(sakuarm.moveWrist(arm_speed *0.01*(arm_joystick_x), // should be changed about  arm_speed*0.01*..
-                        arm_speed *0.01*(arm_joystick_y))){//
-        ledcWrite(LEDpins[1],led_power);
-      }else{
-        ledcWrite(LEDpins[1],0);
-      }
-    }else{
-      sakuarm.moveWrist(0,0);
+      Arm.moveWrist(arm_speed *arm_joystick_x, arm_speed *arm_joystick_y);    
     }
-    sakuarm.rotateHand(wrist_speed*(arm_button_UP - arm_button_DOWN));
-    sakuarm.moveFinger(finger_speed*(finger_button_UP - finger_button_DOWN));
-    sakuarm.moveClow(clow_speed*(clow_button_UP - clow_button_DOWN));
-    sakuarm.updateServos();
+
+    Arm.rotate(SRV_SHOULDER, shoulder_button_UP - shoulder_button_DOWN);
+    Arm.rotate(SRV_ELBOW, elbow_button_UP - elbow_button_DOWN);
+    Arm.rotate(SRV_WRIST, arm_button_UP - arm_button_DOWN);
+    Arm.rotate(SRV_FINGER, finger_button_UP - finger_button_DOWN);
+
+    Arm.updateAll();
+  //*/
 
   }else{
     for(int pin: DCpins){
       ledcWrite(pin,0);
     }
+    DCs.quit();
   }
   /*------------------
   Serial.print(sakuarm.servoAngle[0]); Serial.print(",");

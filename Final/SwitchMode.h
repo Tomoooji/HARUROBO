@@ -3,8 +3,8 @@
 
 #if defined(PS4_CONTROLLER)
   #include <PS4Controller.h>
-  constexpr char MAC_PS4CON[] = "e4:65:b8:d8:d4:80";
-  constexpr float range_othogonal = radians(40); // 前後左右に±50°,斜めは±40°
+  constexpr char MAC_PS4CON[] = "40:99:22:27:b5:e8";
+  //constexpr float range_othogonal = radians(40); // 前後左右に±50°,斜めは±40°
   constexpr int range_ignoreLstick = 50;
   constexpr int line_RL2pushed = 75;
   constexpr int range_ignoreRstick = 20;
@@ -17,7 +17,7 @@
     leg_joystick_y = PS4.LStickY();
     leg_button_R = PS4.R2Value() > line_RL2pushed;
     leg_button_L = PS4.L2Value() > line_RL2pushed;
-    leg_button_shift = PS4.Share() && !PS4.Options();
+    leg_button_shift = PS4.Share() && !PS4.Options();/////////////
     yagura_L = PS4.Left();
     yagura_R = PS4.Right();
     arm_joystick_x = -PS4.RStickX();
@@ -35,7 +35,7 @@
 
 #elif defined(REMOTEXY_BTCL) || defined(REMOTEXY_BLE)
   #include "Rimocon_RemoteXY.h"
-  constexpr float range_othogonal = radians(25); // 前後左右に±50°,斜めは±40°
+  //constexpr float range_othogonal = radians(25); // 前後左右に±50°,斜めは±40°
   constexpr int range_ignoreLstick = 20;
   constexpr int range_ignoreRstick = 20;
 
@@ -47,7 +47,7 @@
     leg_joystick_y = RemoteXY.joystick_01_y;
     leg_button_R = RemoteXY.button_01;
     leg_button_L = RemoteXY.button_02;
-    leg_button_shift = RemoteXY.button_09;
+    leg_button_shift = RemoteXY.button_09;////////
     yagura_L = RemoteXY.button_03;
     yagura_R = RemoteXY.button_04;
     arm_joystick_x = RemoteXY.joystick_02_x;
