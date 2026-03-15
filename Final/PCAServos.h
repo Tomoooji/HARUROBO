@@ -55,6 +55,7 @@ class ServoMotors{ // functional class for cotrolling servo motors with PCA9685
   int angle[4];
   ServoMotors(const bool usePCA = true, const int* armlens = ArmLength);
   void begin();
+  void _update();
   void setPosition(const float* command);
   void rotate(int idx, int da);
   void moveWrist(int dx, int dy);
