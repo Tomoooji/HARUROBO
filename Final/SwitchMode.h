@@ -23,24 +23,24 @@ inline bool isStickmoved(int xval, int yval, int range){
     leg_joystick_y = PS4.LStickY();
     leg_button_R = PS4.R2Value() > line_RL2pushed;
     leg_button_L = PS4.L2Value() > line_RL2pushed;
-    leg_button_shift = isStickmoved(PS4.LStickX(),PS4.LStickY(),70);
+    leg_button_shift = isStickmoved(PS4.LStickX(),PS4.LStickY(),84);
     yagura_L = PS4.Left();
     yagura_R = PS4.Right();
-    arm_joystick_x = -PS4.RStickX();
+    arm_joystick_x = PS4.RStickX();
     arm_joystick_y = PS4.RStickY();
     arm_button_UP = PS4.R1();
     arm_button_DOWN=PS4.L1();
-    arm_button_init = PS4.Circle() && PS4.Up();
+    arm_button_init = PS4.Up();
     arm_button_pick = PS4.Cross() && !PS4.Up() && !PS4.Down();
-    arm_button_drop = PS4.Circle();
-    finger_button_UP = PS4.Triangle();////
-    finger_button_DOWN=PS4.Square();////
+    arm_button_drop = PS4.Circle() && !PS4.Down();
+    finger_button_UP = PS4.Triangle() && !PS4.Down();////
+    finger_button_DOWN = PS4.Square() && !PS4.Down();////
     //clow_button_UP = PS4.Up();
     //clow_button_DOWN = PS4.Down();
-    shoulder_button_UP = PS4.Circle() && PS4.Down() && !PS4.Up();
-    shoulder_button_DOWN=PS4.Cross() && PS4.Down() && !PS4.Up();
-    elbow_button_UP = PS4.Triangle() && PS4.Down() && !PS4.Up();
-    elbow_button_DOWN=PS4.Square() && PS4.Down() && !PS4.Up();
+    shoulder_button_UP = PS4.Circle() && PS4.Down();
+    shoulder_button_DOWN = PS4.Cross() && PS4.Down();
+    elbow_button_UP = PS4.Triangle() && PS4.Down();
+    elbow_button_DOWN = PS4.Square() && PS4.Down();
 
   }
 

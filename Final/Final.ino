@@ -84,9 +84,9 @@ void loop(){
   //-manage omuni-//
     if(isStickmoved(leg_joystick_x, leg_joystick_y, range_ignoreLstick)){
       calcOmuni_accel_d(DCs, leg_joystick_x , leg_joystick_y, (leg_button_R - leg_button_L),
-                        (leg_button_shift?SPEED_FAST:SPEED_SLOW), SPEED_TURN);
+                        (leg_button_shift?SPEED_FAST:SPEED_MIDD), SPEED_TURN);
     }else{
-      calcOmuni_accel_d(DCs, 0, 0, (leg_button_R - leg_button_L), SPEED_FAST, SPEED_TURN);
+      calcOmuni_accel_d(DCs, 0, 0, (leg_button_R - leg_button_L), SPEED_MIDD, SPEED_TURN);
     }
     DCs.speed[MTR_YAGURA] = SPEED_YAGURA * (yagura_R - yagura_L);
     DCs.driveAll();
@@ -105,7 +105,7 @@ void loop(){
     if(isStickmoved(arm_joystick_x, arm_joystick_y, range_ignoreRstick)){
       Arm.moveWrist(arm_speed *arm_joystick_x, arm_speed *arm_joystick_y);    
     }
-
+    Arm._updateIk();
     Arm.rotate(SRV_SHOULDER, shoulder_button_UP - shoulder_button_DOWN);
     Arm.rotate(SRV_ELBOW, elbow_button_UP - elbow_button_DOWN);
     Arm.rotate(SRV_WRIST, arm_button_UP - arm_button_DOWN);
@@ -120,7 +120,7 @@ void loop(){
     }
     DCs.quit();
   }
-  //*------------------
+  /*------------------
   Serial.print(Arm.angle[0]); Serial.print(",");
   Serial.print(Arm.angle[1]); Serial.print(",");
   Serial.print(Arm.angle[2]); Serial.print(",");
@@ -130,7 +130,7 @@ void loop(){
   //*///-----------------
   ledcWrite(LEDpins[0],connection_flag*led_power);
 
-  delay(10);
+  delay(1);
   //RemoteXYEngine.delay(10);
 }
 

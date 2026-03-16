@@ -15,7 +15,7 @@ enum SPEED_OPTIONS{
   SPEED_SLOW = 85,
   SPEED_MIDD = 100,
   SPEED_FAST = 200,
-  SPEED_TURN = 50,
+  SPEED_TURN = 70,
   SPEED_YAGURA = 100
 };
 constexpr float leg_motor_gains[] = {1, 1, 1, 1}; // 足回りモーターの速度定数[最大のn倍]
@@ -56,11 +56,11 @@ class DCmotors{ // functional class for controlling DC motors
   }
 };
 
-constexpr float range_othogonal = radians(30);
+constexpr float range_othogonal = radians(20);
 inline void calcOmuni_d(int* result, int valueX, int valueY, int turn, int speed_l, int speed_r){
   // only set 8direction +stop to leg motors (not drive here)
   float angle = atan2(valueY, valueX);
-  int direcX = valueX?(cos(angle)>cos(range_othogonal)) - (cos(angle)<-cos(range_othogonal)):0;
+  int direcX = valueX?(cos(angle)>cos(PI-range_othogonal)) - (cos(angle)<-cos(PI-range_othogonal)):0;
   int direcY = (sin(angle)>sin(range_othogonal)) - (sin(angle)<-sin(range_othogonal));
   result[MTR_FRONTRIGHT] = (speed_l*sign(direcY -direcX)) -(speed_r*turn) *leg_motor_gains[MTR_FRONTRIGHT];
   result[MTR_BACKRIGHT]  = (speed_l*sign(direcY +direcX)) -(speed_r*turn) *leg_motor_gains[MTR_BACKRIGHT];
@@ -70,17 +70,14 @@ inline void calcOmuni_d(int* result, int valueX, int valueY, int turn, int speed
 
 inline void calcOmuni_accel_d(DCmotors& DC, int valueX, int valueY, int turn, int speed_l, int speed_r){
   float angle = atan2(valueY, valueX);
-  int direcX = valueX?(cos(angle)>cos(range_othogonal)) - (cos(angle)<-cos(range_othogonal)):0;
-  int direcY = (sin(angle)>sin(range_othogonal)) - (sin(angle)<-sin(range_othogonal));
+  int direcX = valueX?(cos(angle)>cos(HALF_PI-range_othogonal)) - (cos(angle)<-cos(HALF_PI-range_othogonal)):0;
+  int direcY = valueY?(sin(angle)>sin(range_othogonal)) - (sin(angle)<-sin(range_othogonal)):0;
   DC.addAccel(MTR_FRONTRIGHT,(speed_l*sign(direcY -direcX)) -(speed_r*turn) *leg_motor_gains[MTR_FRONTRIGHT]);
   DC.addAccel(MTR_BACKRIGHT ,(speed_l*sign(direcY +direcX)) -(speed_r*turn) *leg_motor_gains[MTR_BACKRIGHT]);
   DC.addAccel(MTR_BACKLEFT  ,(speed_l*sign(direcY -direcX)) +(speed_r*turn) *leg_motor_gains[MTR_BACKLEFT]);
   DC.addAccel(MTR_FRONTLEFT ,(speed_l*sign(direcY +direcX)) +(speed_r*turn) *leg_motor_gains[MTR_FRONTLEFT]);
-  /*
-  Serial.print(DC.speed[MTR_FRONTRIGHT]); Serial.print(",");
-  Serial.print(DC.speed[MTR_BACKRIGHT]); Serial.print(",");
-  Serial.print(DC.speed[MTR_BACKLEFT]); Serial.print(",");
-  Serial.print(DC.speed[MTR_FRONTLEFT]); Serial.println();//*/
+  Serial.print(direcX); Serial.print(",");
+  Serial.println(direcY);
 }
 
 inline void calcOmuni_a(int* result, int valueX, int valueY, int turn, int speed_l, int speed_r){
@@ -95,8 +92,13 @@ inline void calcOmuni_a(int* result, int valueX, int valueY, int turn, int speed
 inline void calcOmuni_accel_a(DCmotors& DC, int valueX, int valueY, int turn, int speed_l, int speed_r){
   // set all angles from input to leg motors (not drive here) +accel
   float angle = atan2(valueY, valueX);
-  DC.addAccel(MTR_FRONTRIGHT,(speed_l*(valueX?cos(angle+(PI/4)):0)) -(speed_r*turn) *leg_motor_gains[MTR_FRONTRIGHT]);
+  DC.addAccel(MTR_FRONTRIGHT,(speed_l*(valueX?-cos(angle+(PI/4)):0)) -(speed_r*turn) *leg_motor_gains[MTR_FRONTRIGHT]);
   DC.addAccel(MTR_BACKRIGHT, (speed_l*(valueY?sin(angle+(PI/4)):0)) -(speed_r*turn) *leg_motor_gains[MTR_BACKRIGHT]);
-  DC.addAccel(MTR_BACKLEFT , (speed_l*(valueX?cos(angle+(PI/4)):0)) +(speed_r*turn) *leg_motor_gains[MTR_BACKLEFT]);
+  DC.addAccel(MTR_BACKLEFT , (speed_l*(valueX?-cos(angle+(PI/4)):0)) +(speed_r*turn) *leg_motor_gains[MTR_BACKLEFT]);
   DC.addAccel(MTR_FRONTLEFT, (speed_l*(valueY?sin(angle+(PI/4)):0)) +(speed_r*turn) *leg_motor_gains[MTR_FRONTLEFT]);
+  /*
+  Serial.print(DC.speed[MTR_FRONTRIGHT]); Serial.print(",");
+  Serial.print(DC.speed[MTR_BACKRIGHT]); Serial.print(",");
+  Serial.print(DC.speed[MTR_BACKLEFT]); Serial.print(",");
+  Serial.print(DC.speed[MTR_FRONTLEFT]); Serial.println();//*/
 }
