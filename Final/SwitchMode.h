@@ -14,9 +14,12 @@ inline bool isStickmoved(int xval, int yval, int range){
   constexpr int range_ignoreLstick = 20;
   constexpr int line_RL2pushed = 75;
   constexpr int range_ignoreRstick = 20;
+  #include "TimerButton.h"
+  Timer disconnect{100};
 
   inline void PS4Input(){
-    disconnect_button = PS4.Touchpad()? !disconnect_button: disconnect_button;//
+    disconnect.plessed =PS4.Touchpad();
+    disconnect_button = disconnect.isPushed()? !disconnect_button: disconnect_button;//
     connection_flag = PS4.isConnected() && !disconnect_button;
     appeal_button = PS4.Share() && PS4.Options();
     leg_joystick_x = PS4.LStickX();

@@ -26,7 +26,7 @@ constexpr int led_power = 150;
 
 
 //--環境依存定数--//
-constexpr int LEDpins[]={32, 4, 0};
+constexpr int LEDpins[]={17, 4, 0};
 
 //--出力用変数--//
 #include "DCmotors.h"
