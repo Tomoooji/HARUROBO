@@ -3,7 +3,6 @@
 constexpr int SERVOMAX = 470, SERVOMIN = 120;
 #include <Arduino.h>
 
-//(extern) constexpr int PCAChannels[];
 constexpr int PCAChannels[] = {
   0, 2, 4, 6, 8, 10
 };

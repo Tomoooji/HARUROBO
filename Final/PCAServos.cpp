@@ -62,14 +62,6 @@ void ServoMotors::setPosition(const float* command){
 }
 
 void ServoMotors::rotate (int idx, int direc){
-  /*
-  if(idx < 0 || idx >= this->NUM) return;
-  this->angle[idx] = constrain(this->angle[idx] +(direc*rotate_speed[idx]), limit_min[idx], limit_max[idx]);
-  if(idx == SRV_SHOULDER || idx == SRV_ELBOW){
-    this->Ik.jointAngle[idx] = radians(this->angle[idx]);
-    this->Ik.calcWrist();
-  }
-  */
   switch(idx){
     case SRV_SHOULDER:
     case SRV_ELBOW:

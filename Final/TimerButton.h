@@ -1,4 +1,5 @@
 //timer button class for ps4(and other) controller
+#pragma once
 
 class Timer{
  public:

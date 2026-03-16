@@ -73,8 +73,8 @@ inline bool isStickmoved(int xval, int yval, int range){
     arm_button_drop = RemoteXY.selectorSwitch_01 == 3;
     finger_button_UP = RemoteXY.button_07;
     finger_button_DOWN=RemoteXY.button_08;
-    clow_button_UP = RemoteXY.button_10;
-    clow_button_DOWN = RemoteXY.button_11;
+    //clow_button_UP = RemoteXY.button_10;
+    //clow_button_DOWN = RemoteXY.button_11;
   }
 
 #elif defined(SERIAL_CONTROLLER)

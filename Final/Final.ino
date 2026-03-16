@@ -63,7 +63,6 @@ void loop(){
   //connection_flag = SerialInput();
 
   //--process logic--//
-  //if(disconnect_button && connection_flag) connection_flag = !connection_flag;
   if(appeal_button){
       for(int pin: DCpins){
       ledcWrite(pin,0);

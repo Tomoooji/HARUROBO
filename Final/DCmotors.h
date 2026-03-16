@@ -1,7 +1,6 @@
 #pragma once
 #include <Arduino.h>
 
-//(extern) constexpr int DCpins[];
 constexpr int DCpins[]={
 //  FR      BR      BL      FL    yagura 
    2, 15, 12, 14, 26, 27, 18,  5, 25, 33
