@@ -76,8 +76,8 @@ inline void calcOmuni_accel_d(DCmotors& DC, int valueX, int valueY, int turn, in
   DC.addAccel(MTR_BACKRIGHT ,(speed_l*sign(direcY +direcX)) -(speed_r*turn) *leg_motor_gains[MTR_BACKRIGHT]);
   DC.addAccel(MTR_BACKLEFT  ,(speed_l*sign(direcY -direcX)) +(speed_r*turn) *leg_motor_gains[MTR_BACKLEFT]);
   DC.addAccel(MTR_FRONTLEFT ,(speed_l*sign(direcY +direcX)) +(speed_r*turn) *leg_motor_gains[MTR_FRONTLEFT]);
-  Serial.print(direcX); Serial.print(",");
-  Serial.println(direcY);
+  //Serial.print(direcX); Serial.print(",");
+  //Serial.println(direcY);
 }
 
 inline void calcOmuni_a(int* result, int valueX, int valueY, int turn, int speed_l, int speed_r){

@@ -52,8 +52,6 @@ void ServoMotors::begin(){
     this->pwm.begin();
     this->pwm.setPWMFreq(50);
   }
-  //this->moveWrist(arm_pos_init[0], arm_pos_init[1]);
-  //this->rotate(SRV_WRIST, arm_pos_init[2]);
   this->setPosition(arm_pos_init);
 }
 
