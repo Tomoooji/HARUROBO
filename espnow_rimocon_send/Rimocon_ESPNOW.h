@@ -23,6 +23,7 @@ class Rimocon{
     if(esp_now_init() != ESP_OK) return false;
     if(address != nullptr) this->receiver_address = address;
     if(this->receiver_address != nullptr){
+      memset(&this->_peer_info, 0, sizeof(this->_peer_info));
       memcpy(this->_peer_info.peer_addr, this->receiver_address, 6);
       this->_peer_info.channel = 0; // よくわからんがチャンネルを自動追従するそうな
       this->_peer_info.encrypt = false; // 暗号化有無
@@ -42,6 +43,7 @@ class Rimocon{
   }
 
   static void static_recv_cb(const esp_now_recv_info_t* info, const uint8_t* data, int len){
+    if(_instance->receive_new)return;
     memcpy(&_instance->received, data, sizeof(_instance->received));
     _instance->receive_new = true;
   }
