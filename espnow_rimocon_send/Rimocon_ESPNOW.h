@@ -13,7 +13,7 @@ class Rimocon{
   volatile bool receive_new;
   volatile DATATYPE received;
 
-  static Rimocon *_instance = nullptr;
+  inline static Rimocon *_instance = nullptr;
 
   Rimocon(const uint8_t* address = nullptr):receiver_address(address){}
   
