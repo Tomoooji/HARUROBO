@@ -43,7 +43,7 @@ class Rimocon{
   }
 
   static void static_recv_cb(const esp_now_recv_info_t* info, const uint8_t* data, int len){
-    if(_instance->receive_new)return;
+    if(_instance->receive_new || sizeof(_instance->recieved) != len)return;
     memcpy(&_instance->received, data, sizeof(_instance->received));
     _instance->receive_new = true;
   }
