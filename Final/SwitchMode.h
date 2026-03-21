@@ -83,4 +83,26 @@ inline bool isStickmoved(int xval, int yval, int range){
   constexpr int range_ignoreRstick = 0;
   constexpr int range_ignoreLstick = 0;
 
+#elif defined(ESPNOW_CONTROLLER)
+  #include <ESPNOW_Rimocon.h>
+
+  #pragma pack(push,1)
+  struct message{
+    int speedX, speedY;
+    bool turnL, turnR;
+  };
+  #pragma pack(pop)
+
+  class Rimocon_ESP_NOW: public ESPNOWRimocon<message>{
+    using ESPNOWRimocon<message>::ESPNOWRimocon<message>;
+    void update(){
+      if(connection_flag = this->recieve_new){
+        leg_joystick_x = this->received.speedX;
+        leg_joystick_y = this->received.speedY;
+        leg_button_L = this->received.turnL;
+        leg_button_R = this->received.turnR;
+      }
+    }
+  } gyro;
+
 #endif

@@ -43,6 +43,7 @@ void setup(){
   PS4.begin(MAC_PS4CON);
   //RemoteXY_Init();
   ////Serial2.begin(115200,SERIAL_8N1, 16, 17);
+  //gyro.init();
 
   //--init DCmotors--//
   DCs.begin();
@@ -61,6 +62,7 @@ void loop(){
   PS4Input();
   //RemoteXYEngine.handler(); RemoteXYInput();
   //connection_flag = SerialInput();
+  //gyro.update();
 
   //--process logic--//
   if(appeal_button){
