@@ -17,7 +17,7 @@ bool appeal_button;
 bool shoulder_button_UP, shoulder_button_DOWN;
 bool elbow_button_UP, elbow_button_DOWN;
 
-//PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER
+//PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER or ESPNOW_CONTROLLER
 #define PS4_CONTROLLER
 #include "SwitchMode.h"
 
