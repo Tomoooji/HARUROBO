@@ -3,7 +3,7 @@
 constexpr uint8_t receiverAddress[] = {0x68,0x25,0xdd,0x32,0x12,0x50};//{0x80, 0xf3, 0xda, 0x41, 0x47, 0xe8};//
 
 constexpr int pinX = 32, pinY = 33;
-constexpr int pinL = ,pinR = ;
+constexpr int pinL = 12, pinR = 14;
 
 #pragma pack(push,1)
 struct message{
