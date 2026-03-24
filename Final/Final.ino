@@ -17,8 +17,8 @@ bool appeal_button;
 bool shoulder_button_UP, shoulder_button_DOWN;
 bool elbow_button_UP, elbow_button_DOWN;
 
-//PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER
-#define PS4_CONTROLLER
+//PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER or ESPNOW_CONTROLLER
+#define ESPNOW_CONTROLLER
 #include "SwitchMode.h"
 
 //--出力用定数--//
@@ -40,10 +40,10 @@ void setup(){
   Serial.begin(9600);
 
   //--init controller--//
-  PS4.begin(MAC_PS4CON);
+  //PS4.begin(MAC_PS4CON);
   //RemoteXY_Init();
   ////Serial2.begin(115200,SERIAL_8N1, 16, 17);
-  //gyro.init();
+  gyro.init();
 
   //--init DCmotors--//
   DCs.begin();
@@ -59,10 +59,10 @@ void setup(){
 
 void loop(){
   //--get inputs--//
-  PS4Input();
+  //PS4Input();
   //RemoteXYEngine.handler(); RemoteXYInput();
   //connection_flag = SerialInput();
-  //gyro.update();
+  gyro.update();
 
   //--process logic--//
   if(appeal_button){

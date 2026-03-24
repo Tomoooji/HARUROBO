@@ -85,6 +85,9 @@ inline bool isStickmoved(int xval, int yval, int range){
 
 #elif defined(ESPNOW_CONTROLLER)
   #include <ESPNOW_Rimocon.h>
+  //constexpr float range_othogonal = 0.0;
+  constexpr int range_ignoreLstick = 10;
+  constexpr int range_ignoreRstick = 0;
 
   #pragma pack(push,1)
   struct message{
@@ -93,10 +96,11 @@ inline bool isStickmoved(int xval, int yval, int range){
   };
   #pragma pack(pop)
 
-  class Rimocon_ESP_NOW: public ESPNOWRimocon<message>{
-    using ESPNOWRimocon<message>::ESPNOWRimocon<message>;
+class Rimocon_ESP_NOW: public ESPnowRimocon<message>{
+   public:
+    //using ESPNOWRimocon<message>::ESPNOWRimocon<message>;
     void update(){
-      if(connection_flag = this->recieve_new){
+      if(connection_flag = this->receive_new){
         leg_joystick_x = this->received.speedX;
         leg_joystick_y = this->received.speedY;
         leg_button_L = this->received.turnL;
