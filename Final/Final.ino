@@ -18,7 +18,11 @@ bool shoulder_button_UP, shoulder_button_DOWN;
 bool elbow_button_UP, elbow_button_DOWN;
 
 //PS4_CONTROLLER or REMOTEXY_BTCL or REMOTEXY_BLE or SERIAL_CONTROLLER or ESPNOW_CONTROLLER
+<<<<<<< HEAD
 #define ESPNOW_CONTROLLER
+=======
+#define PS4_CONTROLLER
+>>>>>>> 2b2ed52ca4b0b11f0d82f63d14be94b32edf7795
 #include "SwitchMode.h"
 
 //--出力用定数--//
