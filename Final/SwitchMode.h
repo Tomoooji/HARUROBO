@@ -105,7 +105,10 @@ class Rimocon_ESP_NOW: public ESPnowRimocon<message>{
         leg_joystick_y = this->received.speedY;
         leg_button_L = this->received.turnL;
         leg_button_R = this->received.turnR;
+        this->receive_new = false;
       }
+      Serial.print(leg_joystick_x);Serial.print(",");
+      Serial.print(leg_joystick_x);Serial.println();
     }
   } gyro;
 
